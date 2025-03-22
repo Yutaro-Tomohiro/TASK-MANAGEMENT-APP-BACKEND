@@ -6,5 +6,12 @@ class UserRepository
     end
 
     true
+
+    rescue ActiveRecord::ActiveRecordError
+    raise InternalServerError
+  end
+
+  def find_by_email(email)
+    Credential.find_by(email: email)
   end
 end
