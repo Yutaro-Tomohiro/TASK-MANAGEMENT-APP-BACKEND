@@ -32,4 +32,16 @@ RSpec.describe UserRepository, type: :repository do
       end
     end
   end
+
+  describe '#find_by_email' do
+    let!(:user) { create(:user, name: "test_user") }
+    let!(:credential) { create(:credential, user: user, email: "test_user@example.com", password: "password123") }
+
+    context '正常系' do
+      it '存在する email を検索すると Credential を返す' do
+        result = user_repository.find_by_email("test_user@example.com")
+        expect(result).to have_attributes(email: credential.email, password: credential.password)
+      end
+    end
+  end
 end
