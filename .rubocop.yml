@@ -14,15 +14,12 @@ AllCops:
     - 'script/**/*'
     - 'bin/*'
 
-# Bundler
 Bundler:
   Enabled: true
   
-# Lint
 Lint:
   Enabled: true
 
-# Rails
 Rails:
   Enabled: true
 Rails/DynamicFindBy:
@@ -34,10 +31,11 @@ Rails/NotNullColumn:
 Rails/InverseOf:
   Enabled: false
 
-# Security
 Security:
   Enabled: true
 
-# SRSpec
 RSpec/ContextWording:
   Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
