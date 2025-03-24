@@ -1,1 +1,0 @@
-class InternalServerError < ApplicationError; end
