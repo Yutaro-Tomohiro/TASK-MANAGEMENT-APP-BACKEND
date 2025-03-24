@@ -1,4 +1,6 @@
 class UserService
+  include UserServiceInterface
+
   def initialize(user_repository)
     @user_repository = user_repository
   end

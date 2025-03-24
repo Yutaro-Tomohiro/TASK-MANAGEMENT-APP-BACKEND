@@ -28,7 +28,7 @@ RSpec.describe UserService, type: :service do
       end
     end
 
-    context '登録済みの E-mail の場合' do
+    context 'メールアドレスがすでに存在する場合' do
       before do
         allow(user_form).to receive(:valid?).and_return(true)
         allow(user_repository).to receive(:find_by_email).and_return(true)

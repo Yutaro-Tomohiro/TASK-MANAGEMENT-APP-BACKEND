@@ -3,6 +3,7 @@ class UsersController < ApplicationController
   rescue_from BadRequestError, with: :handle_error
   rescue_from ConflictError, with: :handle_error
   rescue_from StandardError, with: :handle_error
+
   def create
     form = UserRegistrationForm.new(user_params)
 

@@ -1,4 +1,6 @@
 class UserRepository
+  include UserRepositoryInterface
+
   def create(name, email, password)
     ActiveRecord::Base.transaction do
       user = User.create!(identity: SecureRandom.uuid, name: name)
