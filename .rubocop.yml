@@ -37,3 +37,7 @@ Rails/InverseOf:
 # Security
 Security:
   Enabled: true
+
+# SRSpec
+RSpec/ContextWording:
+  Enabled: false
