@@ -4,6 +4,6 @@ class BadRequestError < ApplicationError
   end
 
   def default_message
-    "Bad Request"
+    'Bad Request'
   end
 end

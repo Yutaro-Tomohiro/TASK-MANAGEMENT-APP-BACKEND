@@ -11,7 +11,7 @@ class ApplicationError < StandardError
   end
 
   def default_message
-    "Internal Server Error"
+    'Internal Server Error'
   end
 
   def self.wrap(error)

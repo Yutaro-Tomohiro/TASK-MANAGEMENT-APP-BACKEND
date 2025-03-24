@@ -4,6 +4,6 @@ class ConflictError < ApplicationError
   end
 
   def default_message
-    "Conflict"
+    'Conflict'
   end
 end
