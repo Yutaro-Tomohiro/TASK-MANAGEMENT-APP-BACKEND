@@ -11,4 +11,8 @@ class UserRepository
   def find_by_email(email)
     Credential.find_by(email: email)
   end
+
+  def authenticate(email, password)
+    Credential.find_by(email: email, password: password)&.user
+  end
 end
