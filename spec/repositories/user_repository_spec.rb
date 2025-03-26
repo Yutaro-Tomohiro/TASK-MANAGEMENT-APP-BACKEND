@@ -36,9 +36,9 @@ RSpec.describe UserRepository, type: :repository do
 
   describe '#find_by_email' do
     context 'パラメータが有効な場合' do
-      it '存在する email を検索すると Credential を返すこと' do
+      it '存在する email を検索すると正しいメールアドレスを持つ Credential を返すこと' do
         result_credential = user_repository.find_by_email(user.credential.email)
-        expect(result_credential).to have_attributes(email: user.credential.email, password: user.credential.password)
+        expect(result_credential).to have_attributes(email: user.credential.email)
       end
     end
 

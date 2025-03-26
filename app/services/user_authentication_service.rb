@@ -9,7 +9,7 @@ class UserAuthenticationService
   def login_user(form)
     raise BadRequestError.new unless form.valid?
 
-    user = @user_repository.authenticate(form.email, form.password)
+    user = @user_repository.authenticate_user(form.email, form.password)
 
     {
       user: user,

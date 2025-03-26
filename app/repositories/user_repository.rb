@@ -13,7 +13,8 @@ class UserRepository
     Credential.find_by(email: email)
   end
 
-  def authenticate(email, password)
-    Credential.find_by(email: email, password: password)&.user
+  def authenticate_user(email, password)
+    credential = Credential.find_by(email: email)
+    credential&.authenticate(password) ? credential.user : nil
   end
 end
