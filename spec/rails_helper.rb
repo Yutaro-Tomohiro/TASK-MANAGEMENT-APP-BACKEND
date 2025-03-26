@@ -70,4 +70,16 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include FactoryBot::Syntax::Methods
+
+  config.include ActiveSupport::Testing::TimeHelpers
+
+  config.before do
+    if Rails.env.test?
+      FileUtils.rm_rf(Rails.root.join('tmp/storage'))
+    end
+  end
+
+  config.before do
+    Rails.cache.clear
+  end
 end

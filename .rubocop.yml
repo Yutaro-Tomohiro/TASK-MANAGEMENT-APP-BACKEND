@@ -36,6 +36,8 @@ Security:
 
 RSpec/ContextWording:
   Enabled: false
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
 
 Style/StringLiterals:
   EnforcedStyle: single_quotes

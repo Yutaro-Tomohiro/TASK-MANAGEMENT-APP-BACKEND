@@ -25,5 +25,17 @@ module UserRepositoryInterface
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
   end
 
+  #
+  # 引数の情報を元に、ユーザーを検索する
+  #
+  # @params [String] _email Eメール
+  # @params [String] _password パスワード
+  #
+  # @return [User, nil] 登録された User オブジェクト, 失敗またはメールアドレスが見つからなかった場合は nil
+  #
+  def authenticate_user(_email)
+    fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
+  end
+
   # :nocov:
 end

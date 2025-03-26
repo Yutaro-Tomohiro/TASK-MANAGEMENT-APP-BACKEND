@@ -61,15 +61,13 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/UserId'
                   - $ref: '#/components/schemas/User'
-                  - type: object
-                    required:
-                      - token
-                    properties:
-                      token:
-                        type: string
-                        description: JWT
+          headers:
+            Set-Cookie:
+              description: JWTトークンを保存するためのクッキー
+              schema:
+                type: string
+                example: "jwt=jwt_token; HttpOnly; Secure; SameSite=Strict;"
           description: OK
-          headers: {}
         '400':
           content:
             application/json:
@@ -366,9 +364,12 @@ components:
         email:
           type: string
           description: Eメール
+          format: email
         password:
           type: string
           description: パスワード
+          minLength: 8
+          maxLength: 24
       x-internal: false
     UserId:
       type: object
@@ -388,6 +389,7 @@ components:
         name:
           description: ユーザー名
           type: string
+          maxLength: 50
       x-internal: false
     TaskId:
       type: object
