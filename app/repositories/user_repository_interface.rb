@@ -31,9 +31,9 @@ module UserRepositoryInterface
   # @params [String] _email Eメール
   # @params [String] _password パスワード
   #
-  # @return [User] 登録された User オブジェクト
+  # @return [User, nil] 登録された User オブジェクト, 失敗またはメールアドレスが見つからなかった場合は nil
   #
-  def authenticate(_email)
+  def authenticate_user(_email)
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
   end
 
