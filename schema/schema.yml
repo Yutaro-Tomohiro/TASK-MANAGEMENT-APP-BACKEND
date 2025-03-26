@@ -364,9 +364,12 @@ components:
         email:
           type: string
           description: Eメール
+          format: email
         password:
           type: string
           description: パスワード
+          minLength: 8
+          maxLength: 24
       x-internal: false
     UserId:
       type: object
@@ -386,6 +389,7 @@ components:
         name:
           description: ユーザー名
           type: string
+          maxLength: 50
       x-internal: false
     TaskId:
       type: object
