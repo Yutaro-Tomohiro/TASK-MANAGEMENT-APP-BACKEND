@@ -25,5 +25,26 @@ RSpec.describe UserAuthenticationService, type: :service do
         expect(result[:token]).to eq('mocked_jwt_token')
       end
     end
+
+    context 'フォームが無効な場合' do
+      before do
+        allow(form).to receive(:valid?).and_return(false)
+      end
+
+      it 'BadRequestError を発生させること' do
+        expect { user_authentication_service.login_user(form) }.to raise_error(BadRequestError)
+      end
+    end
+
+    context 'ユーザー認証に失敗した場合' do
+      before do
+        allow(form).to receive(:valid?).and_return(true)
+        allow(user_repository).to receive(:authenticate_user).and_return(nil)
+      end
+
+      it 'UnauthorizedError を発生させること' do
+        expect { user_authentication_service.login_user(form) }.to raise_error(UnauthorizedError)
+      end
+    end
   end
 end

@@ -65,6 +65,25 @@ RSpec.describe "Users API", type: :request do
       }
     end
 
+    let(:invalid_login_attributes) do
+      {
+        email: "test@example.com",
+        password: "wrongpassword"
+      }
+    end
+
+    let(:missing_email_attributes) do
+      {
+        password: "password123"
+      }
+    end
+
+    let(:missing_password_attributes) do
+      {
+        email: "test@example.com"
+      }
+    end
+
     before do
       post "/users", params: create_user_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
     end
@@ -74,6 +93,40 @@ RSpec.describe "Users API", type: :request do
         post "/users/login", params: valid_login_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(200)
+      end
+    end
+
+    context "フォームが無効な時" do
+      it "400 を返す (パラメータが不足している場合)" do
+        post "/users/login", params: missing_email_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(400)
+      end
+
+      it "400 を返す (パスワードが不足している場合)" do
+        post "/users/login", params: missing_password_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(400)
+      end
+    end
+
+    context "認証が失敗した場合" do
+      it "401 を返す (無効なメールアドレスまたはパスワード)" do
+        post "/users/login", params: invalid_login_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context "サーバーエラーが発生した場合" do
+      it "500 を返す" do
+        user_authentication_service = instance_double(UserAuthenticationService)
+        allow(user_authentication_service).to receive(:login_user).and_raise(StandardError.new("Internal Server Error"))
+
+        allow(UserAuthenticationService).to receive(:new).and_return(user_authentication_service)
+
+        post "/users/login", params: valid_login_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        expect(response).to have_http_status(500)
       end
     end
   end
