@@ -5,6 +5,7 @@ class UserRepository
     ActiveRecord::Base.transaction do
       user = User.create!(identity: SecureRandom.uuid, name: name)
       Credential.create!(user: user, email: email, password: password)
+      user
     end
   end
 
