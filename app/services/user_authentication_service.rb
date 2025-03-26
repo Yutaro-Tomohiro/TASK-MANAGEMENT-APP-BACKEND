@@ -11,6 +11,8 @@ class UserAuthenticationService
 
     user = @user_repository.authenticate_user(form.email, form.password)
 
+    raise UnauthorizedError.new unless user
+
     {
       user: user,
       token: @jwt_service.generate_jwt(user.identity)
