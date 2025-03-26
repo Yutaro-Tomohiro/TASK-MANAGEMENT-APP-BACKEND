@@ -49,4 +49,13 @@ RSpec.describe UserRepository, type: :repository do
       end
     end
   end
+
+  describe '#authenticate_user' do
+    context '認証情報が正しい場合' do
+      it '対応するユーザーを返すこと' do
+        result = user_repository.authenticate_user(user.credential.email, user.credential.password)
+        expect(result).to have_attributes(name: user.name)
+      end
+    end
+  end
 end

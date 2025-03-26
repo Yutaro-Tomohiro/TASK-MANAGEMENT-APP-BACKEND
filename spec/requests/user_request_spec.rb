@@ -48,4 +48,33 @@ RSpec.describe "Users API", type: :request do
       end
     end
   end
+
+  describe "POST /users/login" do
+    let(:create_user_attributes) do
+      {
+        name: "test_user",
+        email: "test@example.com",
+        password: "password123"
+      }
+    end
+
+    let(:valid_login_attributes) do
+      {
+        email: "test@example.com",
+        password: "password123"
+      }
+    end
+
+    before do
+      post "/users", params: create_user_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+    end
+
+    context "リクエストが有効な時" do
+      it "200 を返す" do
+        post "/users/login", params: valid_login_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(200)
+      end
+    end
+  end
 end
