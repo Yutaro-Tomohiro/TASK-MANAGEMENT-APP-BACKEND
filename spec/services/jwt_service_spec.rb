@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe JwtService, type: :service do
   let(:jwt_service) { described_class.new }
   let(:user_id) { create(:user).identity }
-  let(:secret_key) { Rails.application.credentials.secret_key_base }
+  let(:secret_key) { Rails.application.secret_key_base }
   let(:algorithm) { 'HS256' }
   let(:fixed_time) { Time.zone.now }
 
