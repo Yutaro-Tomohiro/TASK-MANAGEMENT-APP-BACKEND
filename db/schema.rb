@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_17_141453) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_26_175921) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -22,6 +22,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_17_141453) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "tasks", force: :cascade do |t|
+    t.string "identity", null: false
+    t.string "title", null: false
+    t.text "text"
+    t.integer "priority", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "begins_at"
+    t.datetime "ends_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_tasks", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "task_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["task_id"], name: "index_user_tasks_on_task_id"
+    t.index ["user_id"], name: "index_user_tasks_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "identity", null: false
     t.string "name", null: false
@@ -30,4 +51,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_17_141453) do
   end
 
   add_foreign_key "credentials", "users"
+  add_foreign_key "user_tasks", "tasks"
+  add_foreign_key "user_tasks", "users"
 end
