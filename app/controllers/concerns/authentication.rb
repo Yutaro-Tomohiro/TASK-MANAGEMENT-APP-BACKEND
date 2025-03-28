@@ -8,6 +8,7 @@ module Authentication
   private
 
   def authenticate_user!
+    # TODO: ActionController::Cookiesへの依存を解消する方法を検討したい
     token = cookies.signed[:jwt]
 
     raise UnauthorizedError.new unless token
