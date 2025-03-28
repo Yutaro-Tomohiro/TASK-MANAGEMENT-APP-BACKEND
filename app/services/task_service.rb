@@ -6,6 +6,8 @@ class TaskService
   end
 
   def create_task(form)
+    raise BadRequestError.new unless form.valid?
+
     @task_repository.create(
       form.assignee_ids,
       form.title,

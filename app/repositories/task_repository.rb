@@ -13,6 +13,8 @@ class TaskRepository
     ActiveRecord::Base.transaction do
       users = User.where(identity: assignee_ids)
 
+      raise NotFoundError.new if users.empty?
+
       users.each do |user|
         UserTask.create!(
           user: user,
