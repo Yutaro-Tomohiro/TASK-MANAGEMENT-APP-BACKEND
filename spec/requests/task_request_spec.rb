@@ -49,6 +49,15 @@ RSpec.describe "Tasks API", type: :request do
       end
     end
 
+    context "認証エラー" do
+      it "401 を返す" do
+        allow_any_instance_of(TasksController).to receive(:authenticate_user!).and_raise(UnauthorizedError) # rubocop:disable RSpec/AnyInstance
+        post "/tasks", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
     context "assignee_ids に存在しないユーザーIDが含まれている時" do
       it "404 を返す" do
         invalid_user_id = SecureRandom.uuid
