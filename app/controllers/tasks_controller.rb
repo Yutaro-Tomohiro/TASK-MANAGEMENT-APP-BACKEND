@@ -1,4 +1,6 @@
 class TasksController < ApplicationController
+  include Authentication
+
   skip_before_action :verify_authenticity_token, only: [ :create ]
 
   def create
