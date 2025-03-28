@@ -11,6 +11,7 @@ module TaskRepositoryInterface
   # @param [DateTime] _begins_at 開始日時
   # @param [DateTime] _ends_at 終了日時
   # @param [String, nil] _text 説明
+  # @raise [NotFoundError] ユーザーが見つからない場合
   #
   # @return [void]
   #
