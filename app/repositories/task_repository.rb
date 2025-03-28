@@ -19,6 +19,7 @@ class TaskRepository
         UserTask.create!(
           user: user,
           task: Task.create!(
+            identity: SecureRandom.uuid,
             title: title,
             priority: priority,
             status: status,

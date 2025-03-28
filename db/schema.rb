@@ -23,6 +23,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_175921) do
   end
 
   create_table "tasks", force: :cascade do |t|
+    t.string "identity", null: false
     t.string "title", null: false
     t.text "text"
     t.integer "priority", default: 0, null: false
