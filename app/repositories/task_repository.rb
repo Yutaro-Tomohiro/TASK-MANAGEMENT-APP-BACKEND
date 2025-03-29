@@ -49,7 +49,7 @@ class TaskRepository
     status,
     begins_at,
     ends_at,
-    text,
+    text = nil,
     identity
   )
     task = Task.find_by(identity: identity)
