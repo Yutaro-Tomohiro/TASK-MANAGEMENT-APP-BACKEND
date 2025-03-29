@@ -42,7 +42,8 @@ module TaskServiceInterface
   # @param [TaskCreateForm] _request_body_form リクエストボディフォーム
   # @param [TaskForm] _path_params_form パスパラメータフォーム
   #
-  # @raise [BadRequestError] フォームが無効な場合
+  # @raise [BadRequestError] リクエストボディフォームが無効な場合
+  # @raise [BadRequestError] パスパラメータフォームが無効な場合
   #
   # @return [Task] 更新されたタスク
   #
