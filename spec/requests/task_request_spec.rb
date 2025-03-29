@@ -202,4 +202,50 @@ RSpec.describe "Tasks API", type: :request do
       it_behaves_like "サーバーエラー"
     end
   end
+
+  describe "GET /tasks" do
+    let(:valid_attributes) do
+      {
+        assignee_id: nil,
+        status: nil,
+        priority: nil,
+        expires: nil,
+        cursor: nil
+      }
+    end
+
+    let(:invalid_attributes) do
+      {
+        assignee_id: 'invalid_assignee_id',
+        status: 'invalid_status',
+        priority: 'invalid_priority',
+        expires: 'invalid_expires',
+        cursor: 'invalid_cursor'
+      }
+    end
+
+    let(:request_call) { get "/tasks", params: valid_attributes, headers: { "CONTENT_TYPE" => "application/json" } }
+
+    context "リクエストが有効な時" do
+      it "200 を返す" do
+        request_call
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context "リクエストが無効な時" do
+      it "400 を返す" do
+        get "/tasks", params: invalid_attributes, headers: { "CONTENT_TYPE" => "application/json" }
+        expect(response).to have_http_status(400)
+      end
+    end
+
+    context "認証エラーが発生した時" do
+      it_behaves_like "認証エラー"
+    end
+
+    context "サーバーエラーが発生した時" do
+      it_behaves_like "サーバーエラー"
+    end
+  end
 end
