@@ -11,6 +11,6 @@
 
 class User < ApplicationRecord
   has_one :credential, dependent: :destroy
-  has_many :user_tasks, dependent: :nullify
+  has_many :user_tasks, dependent: :destroy
   has_many :tasks, through: :user_tasks
 end
