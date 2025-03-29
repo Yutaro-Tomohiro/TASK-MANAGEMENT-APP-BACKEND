@@ -36,5 +36,15 @@ module TaskServiceInterface
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
   end
 
+  #
+  # タスク削除処理
+  #
+  # @param [TaskForm] _form タスク削除フォーム
+  #
+  # @raise [BadRequestError] フォームが無効な場合
+  #
+  def delete_task(_form)
+    fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
+  end
   # :nocov:
 end

@@ -35,5 +35,18 @@ module TaskRepositoryInterface
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
   end
 
+  #
+  # タスクを削除する
+  #
+  # @param [String] _identity タスクの identity
+  #
+  # @raise [NotFoundError] タスクが見つからない場合
+  #
+  # @return [Task] 削除されたタスク
+  #
+  def delete(_identity)
+    fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
+  end
+
   # :nocov:
 end
