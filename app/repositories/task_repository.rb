@@ -112,14 +112,7 @@ class TaskRepository
 
     if expires
       current_time = Time.current
-      case expires
-      when 'lt'
-        tasks = tasks.where(ends_at: ..current_time)
-      when 'gt'
-        tasks = tasks.where(ends_at: current_time..)
-      else
-        tasks
-      end
+      tasks = expires == 'lt' ? tasks.where(ends_at: ..current_time) : tasks.where(ends_at: current_time..)
     end
 
     raise NotFoundError.new if tasks.empty?

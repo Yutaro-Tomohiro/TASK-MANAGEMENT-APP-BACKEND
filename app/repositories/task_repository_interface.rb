@@ -32,7 +32,7 @@ module TaskRepositoryInterface
   #
   # @return [Array<Task>] フィルタリングされたタスクの配列
   #
-  def filter(_assignee_id = nil, _status = nil, _priority = nil)
+  def filter(_assignee_id = nil, _status = nil, _priority = nil, _expires = nil)
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
   end
 
