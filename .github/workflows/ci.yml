@@ -86,7 +86,15 @@ jobs:
           bundler-cache: true
 
       - name: Set SECRET_KEY_BASE
-        run: echo "SECRET_KEY_BASE=${{ secrets.MASTER_KEY }}" >> $GITHUB_ENV
+        run: |
+          echo "SECRET_KEY_BASE=${{ secrets.MASTER_KEY }}" >> .env.test
+
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432
+          # REDIS_URL: redis://localhost:6379/0
+        run: bin/rails db:test:prepare spec
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
