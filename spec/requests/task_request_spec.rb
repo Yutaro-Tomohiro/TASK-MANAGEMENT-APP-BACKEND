@@ -123,6 +123,50 @@ RSpec.describe "Tasks API", type: :request do
     end
   end
 
+  describe "PUT /tasks/:id" do
+    let(:request_call) { put "/tasks/#{task.identity}", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" } }
+
+    context "リクエストが有効な時" do
+      it "204 を返す" do
+        put "/tasks/#{task.identity}", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(204)
+      end
+    end
+
+    context "リクエストのidentityがUUIDでない時" do
+      it "400 を返す" do
+        put "/tasks/invalid_task_id", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(400)
+      end
+    end
+
+    context "認証エラーが発生した時" do
+      it_behaves_like "認証エラー"
+    end
+
+    context "タスクが存在しない時" do
+      it "404 を返す" do
+        put "/tasks/#{SecureRandom.uuid}", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context "すべての assignee_ids が存在しないユーザー ID の時" do
+      it "404 を返す" do
+        put "/tasks/#{task.identity}", params: valid_attributes.merge(assignee_ids: [ SecureRandom.uuid ]).to_json, headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context "サーバーエラーが発生した時" do
+      it_behaves_like "サーバーエラー"
+    end
+  end
+
   describe "DELETE /tasks/:id" do
     let(:request_call) { delete "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" } }
 
