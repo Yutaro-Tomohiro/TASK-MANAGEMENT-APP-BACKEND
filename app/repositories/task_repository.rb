@@ -95,7 +95,7 @@ class TaskRepository
     task.destroy
   end
 
-  def filter(assignee_id = nil, status = nil, priority = nil, expires = nil)
+  def filter(assignee_id = nil, status = nil, priority = nil, expires = nil, cursor = nil)
     tasks = Task.all
 
     if assignee_id
@@ -115,8 +115,31 @@ class TaskRepository
       tasks = expires == 'lt' ? tasks.where(ends_at: ..current_time) : tasks.where(ends_at: current_time..)
     end
 
+    paginated_tasks, pagination = apply_cursor_pagination(tasks, cursor)
+
     raise NotFoundError.new if tasks.empty?
 
-    tasks
+    {
+      tasks: paginated_tasks,
+      pagination: pagination
+    }
+  end
+
+  private
+
+  def apply_cursor_pagination(tasks, cursor)
+    per_page = 10
+    offset_value = cursor.to_i if cursor.present?
+    paginated_tasks = tasks.offset(offset_value).limit(per_page)
+
+    next_cursor = offset_value ? (offset_value + per_page).to_s : per_page.to_s
+    previous_cursor = offset_value && offset_value > 0 ? (offset_value - per_page).to_s : nil
+
+    pagination = {
+      next_cursor: paginated_tasks.count == per_page ? next_cursor : nil,
+      previous_cursor: previous_cursor
+    }
+
+    [ paginated_tasks, pagination ]
   end
 end
