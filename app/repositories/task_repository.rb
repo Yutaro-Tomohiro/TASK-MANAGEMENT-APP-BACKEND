@@ -41,4 +41,12 @@ class TaskRepository
 
     task
   end
+
+  def delete(identity)
+    task = Task.find_by(identity: identity)
+
+    raise NotFoundError.new unless task
+
+    task.destroy
+  end
 end

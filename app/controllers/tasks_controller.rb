@@ -1,10 +1,10 @@
 class TasksController < ApplicationController
   include Authentication
 
-  skip_before_action :verify_authenticity_token, only: [ :create ]
+  skip_before_action :verify_authenticity_token, only: [ :create, :destroy ]
 
   def show
-    form = TaskForm.new(show_params)
+    form = TaskForm.new(path_params)
     task = TaskService.new(TaskRepository.new).find_task(form)
     render json: task_json(task), status: :ok
   end
@@ -15,9 +15,15 @@ class TasksController < ApplicationController
     head :created
   end
 
+  def destroy
+    form = TaskForm.new(path_params)
+    TaskService.new(TaskRepository.new).delete_task(form)
+    head :no_content
+  end
+
   private
 
-  def show_params
+  def path_params
     params.permit(:identity)
   end
 

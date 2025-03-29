@@ -24,4 +24,10 @@ class TaskService
 
     @task_repository.find(form.identity)
   end
+
+  def delete_task(form)
+    raise BadRequestError.new unless form.valid?
+
+    @task_repository.delete(form.identity)
+  end
 end
