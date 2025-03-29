@@ -48,6 +48,7 @@ module TaskRepositoryInterface
   # @param [String, nil] _text 説明
   #
   # @raise [NotFoundError] タスクが見つからない場合
+  # @raise [NotFoundError] ユーザーが見つからない場合
   #
   # @return [Task] 更新されたタスク
   #
