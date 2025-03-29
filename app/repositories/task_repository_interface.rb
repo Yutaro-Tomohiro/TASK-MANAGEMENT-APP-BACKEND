@@ -29,7 +29,11 @@ module TaskRepositoryInterface
   # @param [String, nil] _expires 期限
   # @param [String, nil] _cursor カーソル
   #
-  # @return [Array<Task>] フィルタリングされたタスクの配列
+  # @return [Hash] フィルタリングおよびページネーションされたタスクリスト
+  #   - :tasks [ActiveRecord::Relation] フィルタリングされたタスクのリスト
+  #   - :pagination [Hash] ページネーション情報
+  #     - :next_cursor [String, nil] 次のページのカーソル（10件以上のデータがある場合）
+  #     - :previous_cursor [String, nil] 前のページのカーソル（2ページ目以降の場合）
   #
   def filter(_assignee_id: nil, _status: nil, _priority: nil, _expires: nil, _cursor: nil)
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
