@@ -95,7 +95,7 @@ class TaskRepository
     task.destroy
   end
 
-  def filter(assignee_id = nil, status = nil, priority = nil, expires = nil, cursor = nil)
+  def filter(assignee_id: nil, status: nil, priority: nil, expires: nil, cursor: nil)
     tasks = Task.all
 
     if assignee_id
