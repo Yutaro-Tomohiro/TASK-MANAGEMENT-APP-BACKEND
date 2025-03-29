@@ -46,4 +46,16 @@ class TaskService
 
     @task_repository.delete(form.identity)
   end
+
+  def search_tasks(form)
+    raise BadRequestError.new unless form.valid?
+
+    @task_repository.filter(
+      form.assignee_id,
+      form.status,
+      form.priority,
+      form.expires,
+      form.cursor
+    )
+  end
 end
