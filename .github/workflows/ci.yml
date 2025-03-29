@@ -85,9 +85,11 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Set SECRET_KEY_BASE
-        run: |
-          echo "SECRET_KEY_BASE=${{ secrets.MASTER_KEY }}" >> .env.test
+      - name: Set SECRET_KEY_BASE globally
+        run: echo "export SECRET_KEY_BASE=${{ secrets.MASTER_KEY }}" >> ~/.bashrc
+      
+      - name: Load environment variables
+        run: source ~/.bashrc
 
       - name: Run tests
         env:
