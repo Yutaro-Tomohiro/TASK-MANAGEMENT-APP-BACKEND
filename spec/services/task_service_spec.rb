@@ -19,7 +19,7 @@ RSpec.describe TaskService, type: :service do
   let(:valid) do
     { valid?: true }
   end
-  let(:task_form) { instance_double(TaskForm, arguments.merge(valid)) }
+  let(:task_form) { instance_double(TaskCreateForm, arguments.merge(valid)) }
 
   describe '#create_task' do
     context 'タスクが正常に作成される場合' do

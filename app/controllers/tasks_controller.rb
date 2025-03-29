@@ -4,7 +4,7 @@ class TasksController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [ :create ]
 
   def create
-    form = TaskForm.new(create_params)
+    form = TaskCreateForm.new(create_params)
     TaskService.new(TaskRepository.new).create_task(form)
     head :created
   end
