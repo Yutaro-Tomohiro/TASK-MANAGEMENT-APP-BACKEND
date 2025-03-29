@@ -180,5 +180,13 @@ RSpec.describe TaskRepository, type: :repository do
         expect(result.to_a).to contain_exactly(first_task)
       end
     end
+
+    context 'タスクが存在しない時' do
+      it 'NotFoundError を発生させること' do
+        first_task.destroy
+        second_task.destroy
+        expect { task_repository.filter }.to raise_error(NotFoundError)
+      end
+    end
   end
 end

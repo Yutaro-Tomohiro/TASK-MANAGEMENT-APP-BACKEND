@@ -102,6 +102,8 @@ class TaskRepository
       tasks = tasks.joins(:user_tasks).joins(:users).where(users: { identity: assignee_id }).distinct
     end
 
+    raise NotFoundError.new if tasks.empty?
+
     tasks
   end
 end
