@@ -16,4 +16,5 @@ Rails.application.routes.draw do
   post "users/login", to: "users#login"
 
   post "tasks", to: "tasks#create"
+  get "tasks/:identity", to: "tasks#show"
 end

@@ -14,6 +14,7 @@ module UserServiceInterface
   # ユーザー登録処理
   #
   # @param [UserRegistrationForm]　_form ユーザー登録フォーム
+  #
   # @raise [BadRequestError] フォームが無効な場合
   # @raise [ConflictError] メールアドレスがすでに存在する場合
   #

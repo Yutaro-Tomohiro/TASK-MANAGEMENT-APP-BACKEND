@@ -31,7 +31,11 @@ RSpec.describe TaskRepository, type: :repository do
         }
       end
 
-      it 'User に紐づけられた Task が存在すること' do
+      it '同じ Task に複数の User が紐づけられること' do
+        expect(result.map(&:identity)).to match_array(assignee_ids)
+      end
+
+      it '正しい属性の Task が作成されること' do
         result.each do |user|
           expect(user.tasks).to all(have_attributes(expected_attributes))
         end
@@ -55,6 +59,20 @@ RSpec.describe TaskRepository, type: :repository do
        it 'NotFoundError を発生させること' do
         expect { task_repository.create(*arguments) }.to raise_error(NotFoundError)
        end
+    end
+  end
+
+  describe '#find' do
+    context '指定された identity のタスクが存在する場合' do
+      it 'タスクを返すこと' do
+        expect(task_repository.find(task.identity)).to eq(task)
+      end
+    end
+
+    context '指定された identity のタスクが存在しない場合' do
+      it 'NotFoundError を発生させること' do
+        expect { task_repository.find('non_existent_id') }.to raise_error(NotFoundError)
+      end
     end
   end
 end

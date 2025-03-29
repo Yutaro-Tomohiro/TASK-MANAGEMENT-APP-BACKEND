@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from BadRequestError, with: :handle_error
   rescue_from ConflictError, with: :handle_error
+  rescue_from NotFoundError, with: :handle_error
   rescue_from StandardError, with: :handle_error
 
   private
