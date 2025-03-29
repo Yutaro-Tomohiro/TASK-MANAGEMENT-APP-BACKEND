@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
   include Authentication
 
-  skip_before_action :verify_authenticity_token, only: [ :create, :destroy ]
+  skip_before_action :verify_authenticity_token, only: [ :create, :destroy, :update ]
 
   def show
     form = TaskForm.new(path_params)
@@ -10,9 +10,18 @@ class TasksController < ApplicationController
   end
 
   def create
-    form = TaskCreateForm.new(create_params)
+    form = TaskCreateForm.new(task_params)
     TaskService.new(TaskRepository.new).create_task(form)
     head :created
+  end
+
+  def update
+    # TODO: TaskCreateForm の命名は後から修正
+    request_body_form = TaskCreateForm.new(task_params)
+    path_form = TaskForm.new(path_params)
+
+    TaskService.new(TaskRepository.new).update_task(request_body_form, path_form)
+    head :no_content
   end
 
   def destroy
@@ -27,7 +36,7 @@ class TasksController < ApplicationController
     params.permit(:identity)
   end
 
-  def create_params
+  def task_params
     params.permit(
       :title,
       :priority,

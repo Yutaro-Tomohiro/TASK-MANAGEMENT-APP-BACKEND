@@ -25,6 +25,22 @@ class TaskService
     @task_repository.find(form.identity)
   end
 
+  def update_task(request_body_form, path_params_form)
+    raise BadRequestError.new unless request_body_form.valid?
+    raise BadRequestError.new unless path_params_form.valid?
+
+    @task_repository.update(
+      request_body_form.assignee_ids,
+      request_body_form.title,
+      request_body_form.priority,
+      request_body_form.status,
+      request_body_form.begins_at,
+      request_body_form.ends_at,
+      request_body_form.text,
+      path_params_form.identity
+    )
+  end
+
   def delete_task(form)
     raise BadRequestError.new unless form.valid?
 

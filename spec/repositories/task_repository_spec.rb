@@ -5,21 +5,20 @@ RSpec.describe TaskRepository, type: :repository do
   let(:users) { create_list(:user, 2) }
   let(:assignee_ids) { users.map(&:identity) }
   let(:task) { create(:task) }
+  let(:created_result) {
+    task_repository.create(
+      assignee_ids,
+      task.title,
+      task.priority,
+      task.status,
+      task.begins_at,
+      task.ends_at,
+      task.text
+    )
+  }
 
   describe '#create' do
     context 'パラメータが有効な場合' do
-      let(:result) {
-        task_repository.create(
-          assignee_ids,
-          task.title,
-          task.priority,
-          task.status,
-          task.begins_at,
-          task.ends_at,
-          task.text
-        )
-      }
-
       let(:expected_attributes) do
         {
           title: task.title,
@@ -32,11 +31,11 @@ RSpec.describe TaskRepository, type: :repository do
       end
 
       it '同じ Task に複数の User が紐づけられること' do
-        expect(result.map(&:identity)).to match_array(assignee_ids)
+        expect(created_result.map(&:identity)).to match_array(assignee_ids)
       end
 
       it '正しい属性の Task が作成されること' do
-        result.each do |user|
+        created_result.each do |user|
           expect(user.tasks).to all(have_attributes(expected_attributes))
         end
       end
@@ -72,6 +71,71 @@ RSpec.describe TaskRepository, type: :repository do
     context '指定された identity のタスクが存在しない場合' do
       it 'NotFoundError を発生させること' do
         expect { task_repository.find('non_existent_id') }.to raise_error(NotFoundError)
+      end
+    end
+  end
+
+  describe '#update' do
+    let(:task_identity) { created_result.first.tasks.first.identity }
+
+    context 'パラメータが有効な場合' do
+      let(:updated_result) do
+        task_repository.update(
+          assignee_ids,
+          'タイトルの更新',
+          task.priority,
+          task.status,
+          task.begins_at,
+          task.ends_at,
+          task.text,
+          task_identity
+        )
+      end
+
+      it 'タスクを更新すること' do
+        created_task = created_result.first.tasks.first.title
+        updated_task = updated_result.first.tasks.first.title
+        expect(updated_task).not_to eq(created_task)
+      end
+    end
+
+    context '存在しないユーザーのみを指定した場合' do
+      let(:invalid_assignee_ids) { [ 'non_existent_id' ] }
+      let(:not_found_error_result) do
+        task_repository.update(
+          'non_existent_id',
+          'タイトルの更新',
+          task.priority,
+          task.status,
+          task.begins_at,
+          task.ends_at,
+          task.text,
+          task_identity
+        )
+      end
+
+      it 'NotFoundError を発生させること' do
+        expect { not_found_error_result }.to raise_error(NotFoundError)
+      end
+    end
+
+    context '存在しないタスクを更新した場合' do
+      let(:invalid_task_identity) { 'non_existent_id' }
+      let(:not_found_error_result) do
+        task_repository.update(
+          assignee_ids,
+          'タイトルの更新',
+          task.priority,
+          task.status,
+          task.begins_at,
+          task.ends_at,
+          task.text,
+          invalid_task_identity
+        )
+      end
+
+      it 'NotFoundError を発生させること' do
+        expect { not_found_error_result }.to raise_error(NotFoundError)
       end
     end
   end
