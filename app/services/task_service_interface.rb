@@ -37,6 +37,19 @@ module TaskServiceInterface
   end
 
   #
+  # タスク更新処理
+  #
+  # @param [TaskUpdateForm] _form タスク更新フォーム
+  #
+  # @raise [BadRequestError] フォームが無効な場合
+  #
+  # @return [Task] 更新されたタスク
+  #
+  def update_task(_form)
+    fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
+  end
+
+  #
   # タスク削除処理
   #
   # @param [TaskForm] _form タスク削除フォーム
@@ -46,5 +59,6 @@ module TaskServiceInterface
   def delete_task(_form)
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
   end
+
   # :nocov:
 end
