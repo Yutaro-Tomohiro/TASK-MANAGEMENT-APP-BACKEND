@@ -3,6 +3,12 @@ class TasksController < ApplicationController
 
   skip_before_action :verify_authenticity_token, only: [ :create, :destroy, :update ]
 
+  def index
+    form = SearchTasksForm.new(search_params)
+    tasks = TaskService.new(TaskRepository.new).search_tasks(form)
+    render json: tasks, status: :ok
+  end
+
   def show
     form = TaskForm.new(path_params)
     task = TaskService.new(TaskRepository.new).find_task(form)
@@ -31,6 +37,16 @@ class TasksController < ApplicationController
   end
 
   private
+
+  def search_params
+    params.permit(
+      :assignee_id,
+      :status,
+      :priority,
+      :expires,
+      :cursor
+    )
+  end
 
   def path_params
     params.permit(:identity)
