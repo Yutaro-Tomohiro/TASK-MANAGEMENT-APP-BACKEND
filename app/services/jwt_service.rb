@@ -5,6 +5,11 @@ class JwtService
   ALGORITHM = 'HS256'
 
   def self.decode_jwt(token)
+
+    Rails.logger.error('--------------------------------')
+    Rails.logger.error("secret_key: #{SECRET_KEY}")
+    Rails.logger.error('--------------------------------')
+
     JWT.decode(token, SECRET_KEY, true, { algorithm: ALGORITHM })
   end
 
