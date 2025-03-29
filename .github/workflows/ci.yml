@@ -86,13 +86,16 @@ jobs:
           bundler-cache: true
 
       - name: Set SECRET_KEY_BASE globally
-        run: echo "export SECRET_KEY_BASE=${{ secrets.MASTER_KEY }}" >> ~/.bashrc
+        run: echo "SECRET_KEY_BASE=${{ secrets.MASTER_KEY }}" >> $GITHUB_ENV
 
       - name: Load environment variables
         run: source ~/.bashrc
 
       - name: Debug env
         run: env | grep SECRET_KEY_BASE
+
+      - name: Ensure Rails can read credentials
+        run: bin/rails credentials:show
 
       - name: Run tests
         env:
