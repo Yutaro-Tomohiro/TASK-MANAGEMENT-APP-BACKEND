@@ -72,7 +72,7 @@ RSpec.describe "Tasks API", type: :request do
       it_behaves_like "認証エラー"
     end
 
-    context "assignee_ids に存在しないユーザーIDが含まれている時" do
+    context "すべての assignee_ids が存在しないユーザー ID の時" do
       it "404 を返す" do
         invalid_user_id = SecureRandom.uuid
 
