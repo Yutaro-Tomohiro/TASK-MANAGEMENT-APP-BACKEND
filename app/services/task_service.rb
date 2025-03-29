@@ -18,4 +18,10 @@ class TaskService
       form.text
     )
   end
+
+  def find_task(form)
+    raise BadRequestError.new unless form.valid?
+
+    @task_repository.find(form.identity)
+  end
 end

@@ -31,4 +31,8 @@ class TaskRepository
       end
     end
   end
+
+  def find(identity)
+    Task.find_by(identity: identity)
+  end
 end
