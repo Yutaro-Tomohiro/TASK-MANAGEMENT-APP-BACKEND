@@ -75,4 +75,20 @@ RSpec.describe TaskRepository, type: :repository do
       end
     end
   end
+
+  describe '#delete' do
+    context '指定された identity のタスクが存在する場合' do
+      before { task }
+
+      it 'タスクを削除すること' do
+        expect { task_repository.delete(task.identity) }.to change(Task, :count).by(-1)
+      end
+    end
+
+    context '指定された identity のタスクが存在しない場合' do
+      it 'NotFoundError を発生させること' do
+        expect { task_repository.delete('non_existent_id') }.to raise_error(NotFoundError)
+      end
+    end
+  end
 end

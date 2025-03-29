@@ -20,6 +20,7 @@ RSpec.describe TaskService, type: :service do
   let(:valid) do
     { valid?: true }
   end
+  let(:task_form) { instance_double(TaskForm, identity: task.identity) }
 
   describe '#create_task' do
   let(:task_create_form) { instance_double(TaskCreateForm, arguments.merge(valid)) }
@@ -58,8 +59,6 @@ RSpec.describe TaskService, type: :service do
   end
 
   describe '#find_task' do
-    let(:task_form) { instance_double(TaskForm, identity: task.identity) }
-
     context 'タスクが存在する場合' do
       before do
         allow(task_repository).to receive(:find).with(task.identity).and_return(task)
@@ -89,6 +88,30 @@ RSpec.describe TaskService, type: :service do
 
       it 'NotFoundError を発生させること' do
         expect { task_service.find_task(task_form) }.to raise_error(NotFoundError)
+      end
+    end
+  end
+
+  describe '#delete_task' do
+    context 'タスクが存在する場合' do
+      before do
+        allow(task_repository).to receive(:delete).with(task.identity)
+        allow(task_form).to receive(:valid?).and_return(true)
+      end
+
+      it 'delete_task メソッドが呼ばれること' do
+        task_service.delete_task(task_form)
+        expect(task_repository).to have_received(:delete).with(task.identity)
+      end
+    end
+
+    context 'フォームが無効な場合' do
+      before do
+        allow(task_form).to receive(:valid?).and_return(false)
+      end
+
+      it 'BadRequestError を発生させること' do
+        expect { task_service.delete_task(task_form) }.to raise_error(BadRequestError)
       end
     end
   end

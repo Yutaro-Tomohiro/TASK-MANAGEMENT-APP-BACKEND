@@ -130,4 +130,52 @@ RSpec.describe "Tasks API", type: :request do
       end
     end
   end
+
+  describe "DELETE /tasks/:id" do
+    context "リクエストが有効な時" do
+      it "204 を返す" do
+        delete "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(204)
+      end
+    end
+
+    context "リクエストのidentityがUUIDでない時" do
+      it "400 を返す" do
+        delete "/tasks/invalid_task_id", headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(400)
+      end
+    end
+
+    context "認証エラー" do
+      it "401 を返す" do
+        allow_any_instance_of(TasksController).to receive(:authenticate_user!).and_raise(UnauthorizedError) # rubocop:disable RSpec/AnyInstance
+        delete "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context "タスクが存在しない時" do
+      it "404 を返す" do
+        delete "/tasks/#{SecureRandom.uuid}", headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context "サーバーエラーが発生した時" do
+      it "500 を返す" do
+        task_service = instance_double(TaskRepository)
+        allow(task_service).to receive(:delete).and_raise(StandardError.new("Internal Server Error"))
+
+        allow(TaskRepository).to receive(:new).and_return(task_service)
+
+        delete "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(500)
+      end
+    end
+  end
 end
