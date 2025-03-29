@@ -14,11 +14,14 @@ module UserAuthenticationServiceInterface
   #
   # ユーザーログイン処理
   #
-  # @param [UserRegistrationForm]　_form ユーザーログインフォーム
+  # @param [UserLoginForm]　_form ユーザーログインフォーム
   #
-  #  @return [{ user: Object, token: String }] 認証されたユーザー情報とJWTトークン
+  # @raise [BadRequestError] フォームが無効な場合
+  # @raise [UnauthorizedError] 認証に失敗した場合
   #
-  def register_user(_form)
+  # @return [Hash<Symbol, Object>]  認証されたユーザー情報とJWTトークン
+  #
+  def login_user(_form)
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
   end
 
