@@ -41,6 +41,14 @@ RSpec.describe "Tasks API", type: :request do
     end
   end
 
+  shared_examples "サーバーエラー" do
+    it "500 を返す" do
+      allow(TaskRepository).to receive(:new).and_raise(StandardError.new("Internal Server Error"))
+      request_call
+      expect(response).to have_http_status(500)
+    end
+  end
+
   describe "POST /tasks" do
     let(:request_call) { post "/tasks", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" } }
 
@@ -75,16 +83,7 @@ RSpec.describe "Tasks API", type: :request do
     end
 
     context "サーバーエラーが発生した時" do
-      it "500 を返す" do
-        task_service = instance_double(TaskRepository)
-        allow(task_service).to receive(:create).and_raise(StandardError.new("Internal Server Error"))
-
-        allow(TaskRepository).to receive(:new).and_return(task_service)
-
-        post "/tasks", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
-
-        expect(response).to have_http_status(500)
-      end
+      it_behaves_like "サーバーエラー"
     end
   end
 
@@ -120,16 +119,7 @@ RSpec.describe "Tasks API", type: :request do
     end
 
     context "サーバーエラーが発生した時" do
-      it "500 を返す" do
-        task_service = instance_double(TaskRepository)
-        allow(task_service).to receive(:find).and_raise(StandardError.new("Internal Server Error"))
-
-        allow(TaskRepository).to receive(:new).and_return(task_service)
-
-        get "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" }
-
-        expect(response).to have_http_status(500)
-      end
+      it_behaves_like "サーバーエラー"
     end
   end
 
@@ -165,16 +155,7 @@ RSpec.describe "Tasks API", type: :request do
     end
 
     context "サーバーエラーが発生した時" do
-      it "500 を返す" do
-        task_service = instance_double(TaskRepository)
-        allow(task_service).to receive(:delete).and_raise(StandardError.new("Internal Server Error"))
-
-        allow(TaskRepository).to receive(:new).and_return(task_service)
-
-        delete "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" }
-
-        expect(response).to have_http_status(500)
-      end
+      it_behaves_like "サーバーエラー"
     end
   end
 end
