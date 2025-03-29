@@ -31,7 +31,11 @@ RSpec.describe TaskRepository, type: :repository do
         }
       end
 
-      it 'User に紐づけられた Task が存在すること' do
+      it '同じ Task に複数の User が紐づけられること' do
+        expect(result.map(&:identity)).to match_array(assignee_ids)
+      end
+
+      it '正しい属性の Task が作成されること' do
         result.each do |user|
           expect(user.tasks).to all(have_attributes(expected_attributes))
         end
