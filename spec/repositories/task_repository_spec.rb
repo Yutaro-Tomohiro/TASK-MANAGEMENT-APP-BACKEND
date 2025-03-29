@@ -157,11 +157,27 @@ RSpec.describe TaskRepository, type: :repository do
   end
 
   describe '#filter' do
-    let(:tasks) { create_list(:task, 2) }
+    let!(:first_user) { create(:user, identity: 'user_1', name: 'Alice') }
+    let!(:second_user) { create(:user, identity: 'user_2', name: 'Bob') }
+    let!(:first_task) { create(:task, identity: 'task_1', title: 'Task 1', text: 'Description of Task 1', priority: 1, status: 0, begins_at: Time.zone.now, ends_at: 1.day.from_now) }
+    let!(:second_task) { create(:task, identity: 'task_2', title: 'Task 2', text: 'Description of Task 2', priority: 2, status: 1, begins_at: Time.zone.now, ends_at: 2.days.from_now) }
+
+    before do
+      first_user.tasks << first_task
+      second_user.tasks << second_task
+    end
 
     context 'パラメータに何も指定されていない時' do
       it '全てのタスクを返すこと' do
-        expect(task_repository.filter).to match_array(tasks)
+        expect(task_repository.filter).to contain_exactly(first_task, second_task)
+      end
+    end
+
+    context 'パラメータに assignee_id が指定されている時' do
+      it '指定されたユーザーのタスクを返すこと' do
+        result = task_repository.filter(first_user.identity)
+
+        expect(result.to_a).to contain_exactly(first_task)
       end
     end
   end

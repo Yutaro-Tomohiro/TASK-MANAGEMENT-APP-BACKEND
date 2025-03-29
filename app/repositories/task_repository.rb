@@ -95,7 +95,13 @@ class TaskRepository
     task.destroy
   end
 
-  def filter
-    Task.all
+  def filter(assignee_id = nil)
+    tasks = Task.all
+
+    if assignee_id
+      tasks = tasks.joins(:user_tasks).joins(:users).where(users: { identity: assignee_id }).distinct
+    end
+
+    tasks
   end
 end

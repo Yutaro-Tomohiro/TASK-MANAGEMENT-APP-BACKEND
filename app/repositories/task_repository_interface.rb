@@ -23,9 +23,11 @@ module TaskRepositoryInterface
   #
   # タスクをフィルタリングする
   #
+  # @param [String], nil] _assignee_id ユーザーの identity
+  #
   # @return [Array<Task>] フィルタリングされたタスクの配列
   #
-  def filter
+  def filter(_assignee_id = nil)
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
   end
 
