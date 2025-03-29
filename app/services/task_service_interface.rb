@@ -39,13 +39,14 @@ module TaskServiceInterface
   #
   # タスク更新処理
   #
-  # @param [TaskUpdateForm] _form タスク更新フォーム
+  # @param [TaskCreateForm] _request_body_form リクエストボディフォーム
+  # @param [TaskForm] _path_params_form パスパラメータフォーム
   #
   # @raise [BadRequestError] フォームが無効な場合
   #
   # @return [Task] 更新されたタスク
   #
-  def update_task(_form)
+  def update_task(_request_body_form, _path_params_form)
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
   end
 

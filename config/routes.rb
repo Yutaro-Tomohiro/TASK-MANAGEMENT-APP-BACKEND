@@ -18,4 +18,5 @@ Rails.application.routes.draw do
   post "tasks", to: "tasks#create"
   get "tasks/:identity", to: "tasks#show"
   delete "tasks/:identity", to: "tasks#destroy"
+  put "tasks/:identity", to: "tasks#update"
 end
