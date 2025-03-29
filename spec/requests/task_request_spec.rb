@@ -68,7 +68,7 @@ RSpec.describe "Tasks API", type: :request do
       end
     end
 
-    context "認証エラー" do
+    context "認証エラーが発生した時" do
       it_behaves_like "認証エラー"
     end
 
@@ -106,7 +106,7 @@ RSpec.describe "Tasks API", type: :request do
       end
     end
 
-    context "認証エラー" do
+    context "認証エラーが発生した時" do
       it_behaves_like "認証エラー"
     end
 
@@ -142,7 +142,7 @@ RSpec.describe "Tasks API", type: :request do
       end
     end
 
-    context "認証エラー" do
+    context "認証エラーが発生した時" do
       it_behaves_like "認証エラー"
     end
 
