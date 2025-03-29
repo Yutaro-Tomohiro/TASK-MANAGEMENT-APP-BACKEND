@@ -159,8 +159,8 @@ RSpec.describe TaskRepository, type: :repository do
   describe '#filter' do
     let!(:first_user) { create(:user, identity: 'user_1', name: 'Alice') }
     let!(:second_user) { create(:user, identity: 'user_2', name: 'Bob') }
-    let!(:first_task) { create(:task, identity: 'task_1', title: 'Task 1', text: 'Description of Task 1', priority: 1, status: 0, begins_at: Time.zone.now, ends_at: 1.day.from_now) }
-    let!(:second_task) { create(:task, identity: 'task_2', title: 'Task 2', text: 'Description of Task 2', priority: 2, status: 1, begins_at: Time.zone.now, ends_at: 2.days.from_now) }
+    let!(:first_task) { create(:task, identity: 'task_1', title: 'Task 1', text: 'Description of Task 1', status: 'not_started', priority: 'low', begins_at: Time.zone.now, ends_at: 1.day.from_now) }
+    let!(:second_task) { create(:task, identity: 'task_2', title: 'Task 2', text: 'Description of Task 2', status: 'in_progress', priority: 'medium', begins_at: Time.zone.now, ends_at: 2.days.from_now) }
 
     before do
       first_user.tasks << first_task
@@ -175,8 +175,15 @@ RSpec.describe TaskRepository, type: :repository do
 
     context 'パラメータに assignee_id が指定されている時' do
       it '指定されたユーザーのタスクを返すこと' do
-        result = task_repository.filter(first_user.identity)
+        result = task_repository.filter(first_user.identity, nil)
 
+        expect(result.to_a).to contain_exactly(first_task)
+      end
+    end
+
+    context 'パラメータに status が指定されている時' do
+      it '指定されたステータスのタスクを返すこと' do
+        result = task_repository.filter(nil, 'not_started')
         expect(result.to_a).to contain_exactly(first_task)
       end
     end

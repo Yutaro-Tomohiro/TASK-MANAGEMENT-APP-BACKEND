@@ -95,11 +95,15 @@ class TaskRepository
     task.destroy
   end
 
-  def filter(assignee_id = nil)
+  def filter(assignee_id = nil, status = nil)
     tasks = Task.all
 
     if assignee_id
       tasks = tasks.joins(:user_tasks).joins(:users).where(users: { identity: assignee_id }).distinct
+    end
+
+    if status
+      tasks = tasks.where(status: status)
     end
 
     raise NotFoundError.new if tasks.empty?

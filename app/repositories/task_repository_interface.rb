@@ -24,6 +24,7 @@ module TaskRepositoryInterface
   # タスクをフィルタリングする
   #
   # @param [String, nil] _assignee_id ユーザーの identity
+  # @param [String, nil] _status ステータス
   #
   # @raise [NotFoundError] タスクが見つからない場合
   #
