@@ -20,6 +20,15 @@ module TaskRepositoryInterface
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
   end
 
+  #
+  # タスクをフィルタリングする
+  #
+  # @return [Array<Task>] フィルタリングされたタスクの配列
+  #
+  def filter
+    fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
+  end
+
   # :nocov:
 
   #

@@ -155,4 +155,14 @@ RSpec.describe TaskRepository, type: :repository do
       end
     end
   end
+
+  describe '#filter' do
+    let(:tasks) { create_list(:task, 2) }
+
+    context 'パラメータに何も指定されていない時' do
+      it '全てのタスクを返すこと' do
+        expect(task_repository.filter).to match_array(tasks)
+      end
+    end
+  end
 end

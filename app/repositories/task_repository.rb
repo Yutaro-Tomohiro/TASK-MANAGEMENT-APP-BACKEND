@@ -94,4 +94,8 @@ class TaskRepository
 
     task.destroy
   end
+
+  def filter
+    Task.all
+  end
 end
