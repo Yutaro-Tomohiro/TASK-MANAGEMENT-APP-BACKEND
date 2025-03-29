@@ -1,5 +1,5 @@
 class Task < ApplicationRecord
-  has_many :user_tasks, dependent: :nullify
+  has_many :user_tasks, dependent: :destroy
   has_many :users, through: :user_tasks
 
   enum :priority, { low: 0, medium: 1, high: 2 }, prefix: true
