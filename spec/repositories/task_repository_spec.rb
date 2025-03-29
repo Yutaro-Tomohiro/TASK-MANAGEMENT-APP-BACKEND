@@ -160,7 +160,7 @@ RSpec.describe TaskRepository, type: :repository do
     let!(:first_user) { create(:user, identity: 'user_1', name: 'Alice') }
     let!(:second_user) { create(:user, identity: 'user_2', name: 'Bob') }
     let!(:first_task) { create(:task, identity: 'task_1', title: 'Task 1', text: 'Description of Task 1', status: 'not_started', priority: 'low', begins_at: Time.zone.now, ends_at: 1.day.from_now) }
-    let!(:second_task) { create(:task, identity: 'task_2', title: 'Task 2', text: 'Description of Task 2', status: 'in_progress', priority: 'medium', begins_at: Time.zone.now, ends_at: 2.days.from_now) }
+    let!(:second_task) { create(:task, identity: 'task_2', title: 'Task 2', text: 'Description of Task 2', status: 'in_progress', priority: 'medium', begins_at: Time.zone.now, ends_at: 3.days.from_now) }
 
     before do
       first_user.tasks << first_task
@@ -192,6 +192,24 @@ RSpec.describe TaskRepository, type: :repository do
       it '指定された優先度のタスクを返すこと' do
         result = task_repository.filter(nil, nil, 'low')
         expect(result.to_a).to contain_exactly(first_task)
+      end
+    end
+
+    context 'expires パラメータに lt が指定されている時' do
+      it '期限切れのタスクを返すこと' do
+        travel_to 2.days.from_now do
+          result = task_repository.filter(nil, nil, nil, 'lt')
+          expect(result.to_a).to contain_exactly(first_task)
+        end
+      end
+    end
+
+    context 'expires パラメータに gt が指定されている時' do
+      it '期限内のタスクを返すこと' do
+        travel_to 2.days.from_now do
+          result = task_repository.filter(nil, nil, nil, 'gt')
+          expect(result.to_a).to contain_exactly(second_task)
+        end
       end
     end
 

@@ -95,7 +95,7 @@ class TaskRepository
     task.destroy
   end
 
-  def filter(assignee_id = nil, status = nil, priority = nil)
+  def filter(assignee_id = nil, status = nil, priority = nil, expires = nil)
     tasks = Task.all
 
     if assignee_id
@@ -108,6 +108,18 @@ class TaskRepository
 
     if priority
       tasks = tasks.where(priority: priority)
+    end
+
+    if expires
+      current_time = Time.current
+      case expires
+      when 'lt'
+        tasks = tasks.where(ends_at: ..current_time)
+      when 'gt'
+        tasks = tasks.where(ends_at: current_time..)
+      else
+        tasks
+      end
     end
 
     raise NotFoundError.new if tasks.empty?

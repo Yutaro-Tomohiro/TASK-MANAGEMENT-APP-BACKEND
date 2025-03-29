@@ -25,7 +25,8 @@ module TaskRepositoryInterface
   #
   # @param [String, nil] _assignee_id ユーザーの identity
   # @param [String, nil] _status ステータス
-  # @param [string, nil] _priority 優先度
+  # @param [String, nil] _priority 優先度
+  # @param [String, nil] _expires 期限
   #
   # @raise [NotFoundError] タスクが見つからない場合
   #
