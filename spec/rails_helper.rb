@@ -76,6 +76,8 @@ RSpec.configure do |config|
   config.before do
     if Rails.env.test?
       FileUtils.rm_rf(Rails.root.join('tmp/storage'))
+      FileUtils.mkdir_p(Rails.root.join('tmp/storage'))
+      FileUtils.touch(Rails.root.join('tmp/storage/.keep'))
     end
   end
 
