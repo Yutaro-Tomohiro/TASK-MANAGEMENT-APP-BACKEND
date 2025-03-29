@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Tasks API", type: :request do
   let(:user) { User.create!(identity: SecureRandom.uuid, name: "Test User") }
+  let(:task) { create(:task) }
   let(:jwt_token) { JwtService.new.generate_jwt(user.identity) }  # 実際のJWTトークンを生成
   let(:valid_attributes) do
     {
@@ -76,6 +77,54 @@ RSpec.describe "Tasks API", type: :request do
         allow(TaskRepository).to receive(:new).and_return(task_service)
 
         post "/tasks", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(500)
+      end
+    end
+  end
+
+  describe "GET /tasks/:id" do
+    context "リクエストが有効な時" do
+      it "200 を返す" do
+        get "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context "リクエストのidentityがUUIDでない時" do
+      it "400 を返す" do
+        get "/tasks/invalid_task_id", headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(400)
+      end
+    end
+
+    context "認証エラー" do
+      it "401 を返す" do
+        allow_any_instance_of(TasksController).to receive(:authenticate_user!).and_raise(UnauthorizedError) # rubocop:disable RSpec/AnyInstance
+        get "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context "タスクが存在しない時" do
+      it "404 を返す" do
+        get "/tasks/#{SecureRandom.uuid}", headers: { "CONTENT_TYPE" => "application/json" }
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context "サーバーエラーが発生した時" do
+      it "500 を返す" do
+        task_service = instance_double(TaskRepository)
+        allow(task_service).to receive(:find).and_raise(StandardError.new("Internal Server Error"))
+
+        allow(TaskRepository).to receive(:new).and_return(task_service)
+
+        get "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(500)
       end

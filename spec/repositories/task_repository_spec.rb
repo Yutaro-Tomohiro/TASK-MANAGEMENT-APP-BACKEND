@@ -61,4 +61,18 @@ RSpec.describe TaskRepository, type: :repository do
        end
     end
   end
+
+  describe '#find' do
+    context '指定された identity のタスクが存在する場合' do
+      it 'タスクを返すこと' do
+        expect(task_repository.find(task.identity)).to eq(task)
+      end
+    end
+
+    context '指定された identity のタスクが存在しない場合' do
+      it 'NotFoundError を発生させること' do
+        expect { task_repository.find('non_existent_id') }.to raise_error(NotFoundError)
+      end
+    end
+  end
 end
