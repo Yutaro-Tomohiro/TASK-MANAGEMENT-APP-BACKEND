@@ -25,12 +25,13 @@ module TaskRepositoryInterface
   #
   # @param [String, nil] _assignee_id ユーザーの identity
   # @param [String, nil] _status ステータス
+  # @param [string, nil] _priority 優先度
   #
   # @raise [NotFoundError] タスクが見つからない場合
   #
   # @return [Array<Task>] フィルタリングされたタスクの配列
   #
-  def filter(_assignee_id = nil, _status = nil)
+  def filter(_assignee_id = nil, _status = nil, _priority = nil)
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
   end
 

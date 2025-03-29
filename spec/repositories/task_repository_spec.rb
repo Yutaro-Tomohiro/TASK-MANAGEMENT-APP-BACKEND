@@ -188,6 +188,13 @@ RSpec.describe TaskRepository, type: :repository do
       end
     end
 
+    context 'パラメータに priority が指定されている時' do
+      it '指定された優先度のタスクを返すこと' do
+        result = task_repository.filter(nil, nil, 'low')
+        expect(result.to_a).to contain_exactly(first_task)
+      end
+    end
+
     context 'タスクが存在しない時' do
       it 'NotFoundError を発生させること' do
         first_task.destroy

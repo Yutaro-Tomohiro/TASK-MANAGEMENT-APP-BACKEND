@@ -95,7 +95,7 @@ class TaskRepository
     task.destroy
   end
 
-  def filter(assignee_id = nil, status = nil)
+  def filter(assignee_id = nil, status = nil, priority = nil)
     tasks = Task.all
 
     if assignee_id
@@ -104,6 +104,10 @@ class TaskRepository
 
     if status
       tasks = tasks.where(status: status)
+    end
+
+    if priority
+      tasks = tasks.where(priority: priority)
     end
 
     raise NotFoundError.new if tasks.empty?
