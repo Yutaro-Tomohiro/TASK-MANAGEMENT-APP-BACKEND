@@ -62,5 +62,22 @@ module TaskServiceInterface
     fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
   end
 
+  #
+  # タスク検索処理
+  #
+  # @param [TaskForm] _form タスク検索フォーム
+  #
+  # @raise [BadRequestError] フォームが無効な場合
+  #
+  # @return [Hash] フィルタリングおよびページネーションされたタスクリスト
+  #   - :tasks [ActiveRecord::Relation] フィルタリングされたタスクのリスト
+  #   - :pagination [Hash] ページネーション情報
+  #     - :next_cursor [String, nil] 次のページのカーソル（10件以上のデータがある場合）
+  #     - :previous_cursor [String, nil] 前のページのカーソル（2ページ目以降の場合）
+  #
+  def search_tasks(_form)
+    fail NotImplementedError, "You mast implement #{self.class}##{__method__}"
+  end
+
   # :nocov:
 end

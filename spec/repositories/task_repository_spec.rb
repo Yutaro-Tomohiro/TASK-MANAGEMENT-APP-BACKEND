@@ -155,4 +155,116 @@ RSpec.describe TaskRepository, type: :repository do
       end
     end
   end
+
+  describe '#filter' do
+    let!(:first_user) { create(:user, identity: 'user_1', name: 'Alice') }
+    let!(:second_user) { create(:user, identity: 'user_2', name: 'Bob') }
+    let!(:first_task) { create(:task, identity: 'task_1', title: 'Task 1', text: 'Description of Task 1', status: 'not_started', priority: 'low', begins_at: Time.zone.now, ends_at: 1.day.from_now) }
+    let!(:second_task) { create(:task, identity: 'task_2', title: 'Task 2', text: 'Description of Task 2', status: 'in_progress', priority: 'medium', begins_at: Time.zone.now, ends_at: 3.days.from_now) }
+
+    before do
+      first_user.tasks << first_task
+      second_user.tasks << second_task
+    end
+
+    context 'パラメータに何も指定されていない時' do
+      it '全てのタスクを返すこと' do
+        expect(task_repository.filter[:tasks].map(&:identity)).to contain_exactly(first_task.identity, second_task.identity)
+      end
+    end
+
+    context 'パラメータに assignee_id が指定されている時' do
+      it '指定されたユーザーのタスクを返すこと' do
+        result = task_repository.filter(assignee_id: first_user.identity)
+
+        expect(result[:tasks].to_a).to contain_exactly(first_task)
+      end
+    end
+
+    context 'パラメータに status が指定されている時' do
+      it '指定されたステータスのタスクを返すこと' do
+        result = task_repository.filter(status: 'not_started')
+        expect(result[:tasks].to_a).to contain_exactly(first_task)
+      end
+    end
+
+    context 'パラメータに priority が指定されている時' do
+      it '指定された優先度のタスクを返すこと' do
+        result = task_repository.filter(priority: 'low')
+        expect(result[:tasks].to_a).to contain_exactly(first_task)
+      end
+    end
+
+    context 'expires パラメータに lt が指定されている時' do
+      it '期限切れのタスクを返すこと' do
+        travel_to 2.days.from_now do
+          result = task_repository.filter(expires: 'lt')
+          expect(result[:tasks].to_a).to contain_exactly(first_task)
+        end
+      end
+    end
+
+    context 'expires パラメータに gt が指定されている時' do
+      it '期限内のタスクを返すこと' do
+        travel_to 2.days.from_now do
+          result = task_repository.filter(expires: 'gt')
+          expect(result[:tasks].to_a).to contain_exactly(second_task)
+        end
+      end
+    end
+
+    context 'カーソルベースのページネーションのテスト' do
+      let(:many_users) do
+        Array.new(20) do |i|
+          create(:user, identity: "user_#{i}", name: "User #{i}")
+        end
+      end
+
+      let(:many_tasks) do
+        Array.new(20) do |i|
+          create(:task, identity: "task_#{i}", title: "Task #{i}", text: "Description of Task #{i}", status: 'not_started', priority: 'low', begins_at: Time.zone.now, ends_at: 1.day.from_now)
+        end
+      end
+
+      before do
+        many_users.each do |user|
+          user.tasks << many_tasks
+        end
+      end
+
+      it 'カーソルが指定されていない場合、最初のページを返すこと' do
+        result = task_repository.filter()
+        expect(result[:pagination][:previous_cursor]).to be_nil
+      end
+
+      it 'カーソルが指定された場合、次のページのカーソルを返すこと' do
+        result = task_repository.filter(cursor: 10)
+        expect(result[:pagination][:next_cursor]).to eq('20')
+      end
+
+      it 'カーソルが指定された場合、前のページのカーソルを返すこと' do
+        result = task_repository.filter(cursor: 20)
+        expect(result[:pagination][:previous_cursor]).to eq('10')
+      end
+
+      it '最初のページの場合、前のページのカーソルが nil になること' do
+        result = task_repository.filter(cursor: 0)
+        expect(result[:pagination][:previous_cursor]).to be_nil
+      end
+
+      it '最後のページの場合、次のページのカーソル が nil になること' do
+        result = task_repository.filter(cursor: 20)
+        expect(result[:pagination][:next_cursor]).to be_nil
+      end
+    end
+
+    context 'タスクが存在しない時' do
+      it 'tasks が空配列を返すこと' do
+        first_task.destroy
+        second_task.destroy
+
+        expect(task_repository.filter[:tasks]).to be_empty
+      end
+    end
+  end
 end

@@ -193,7 +193,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  items:
+                  tasks:
                     type: array
                     items:
                       allOf:
