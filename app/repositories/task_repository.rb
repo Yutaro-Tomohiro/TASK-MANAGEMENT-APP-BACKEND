@@ -117,8 +117,6 @@ class TaskRepository
 
     paginated_tasks, pagination = apply_cursor_pagination(tasks, cursor)
 
-    raise NotFoundError.new if tasks.empty?
-
     {
       tasks: paginated_tasks,
       pagination: pagination

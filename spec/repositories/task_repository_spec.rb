@@ -259,10 +259,11 @@ RSpec.describe TaskRepository, type: :repository do
     end
 
     context 'タスクが存在しない時' do
-      it 'NotFoundError を発生させること' do
+      it 'tasks が空配列を返すこと' do
         first_task.destroy
         second_task.destroy
-        expect { task_repository.filter }.to raise_error(NotFoundError)
+
+        expect(task_repository.filter[:tasks]).to be_empty
       end
     end
   end

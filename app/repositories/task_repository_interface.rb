@@ -29,8 +29,6 @@ module TaskRepositoryInterface
   # @param [String, nil] _expires 期限
   # @param [String, nil] _cursor カーソル
   #
-  # @raise [NotFoundError] タスクが見つからない場合
-  #
   # @return [Array<Task>] フィルタリングされたタスクの配列
   #
   def filter(_assignee_id: nil, _status: nil, _priority: nil, _expires: nil, _cursor: nil)
