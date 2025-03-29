@@ -35,6 +35,10 @@ class TaskRepository
   end
 
   def find(identity)
-    Task.find_by(identity: identity)
+    task = Task.find_by(identity: identity)
+
+    raise NotFoundError.new unless task
+
+    task
   end
 end
