@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   post "users/login", to: "users#login"
 
   post "tasks", to: "tasks#create"
+  get "tasks", to: "tasks#index"
   get "tasks/:identity", to: "tasks#show"
   delete "tasks/:identity", to: "tasks#destroy"
   put "tasks/:identity", to: "tasks#update"
