@@ -94,6 +94,9 @@ jobs:
       - name: Debug env
         run: env | grep SECRET_KEY_BASE
 
+      - name: Set up master.key
+        run: echo "${{ secrets.SECRET_KEY }}" > config/master.key
+
       - name: Ensure Rails can read credentials
         run: bin/rails credentials:show
 
