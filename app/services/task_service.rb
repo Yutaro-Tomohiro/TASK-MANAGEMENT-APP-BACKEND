@@ -51,11 +51,11 @@ class TaskService
     raise BadRequestError.new unless form.valid?
 
     @task_repository.filter(
-      form.assignee_id,
-      form.status,
-      form.priority,
-      form.expires,
-      form.cursor
+      assignee_id: form.assignee_id,
+      status: form.status,
+      priority: form.priority,
+      expires: form.expires,
+      cursor: form.cursor
     )
   end
 end
