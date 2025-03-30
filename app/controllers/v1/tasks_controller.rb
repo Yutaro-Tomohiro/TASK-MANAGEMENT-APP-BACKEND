@@ -7,7 +7,7 @@ module V1
     def index
       form = SearchTasksForm.new(search_params)
       tasks = TaskService.new(TaskRepository.new).search_tasks(form)
-      render json: tasks, status: :ok
+      render json: index_task_json(tasks), status: :ok
     end
 
     def show
@@ -74,6 +74,26 @@ module V1
         begins_at: task.begins_at,
         ends_at: task.ends_at,
         text: task.text
+      }
+    end
+
+    def index_task_json(tasks)
+      {
+        tasks: tasks[:tasks].map do |task|
+          {
+            task_id: task.identity,
+            assignee_ids: task.users.map(&:identity),
+            title: task.title,
+            priority: task.priority,
+            status: task.status,
+            begins_at: task.begins_at,
+            ends_at: task.ends_at
+          }
+        end,
+        pagination: {
+          next_cursor: tasks[:pagination][:next_cursor],
+          previous_cursor: tasks[:pagination][:previous_cursor]
+        }
       }
     end
   end
