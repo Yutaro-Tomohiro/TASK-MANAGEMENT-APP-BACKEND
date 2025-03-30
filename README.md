@@ -7,18 +7,19 @@
 * `docker compose build`
 * `docker compose run web rails db:create`
 * `docker compose run web rails db:migrate`
+* `docker compose up`
 
 ## テスト実⾏⽅法
 以下のコマンドを実行してください。
 
-* `docker compose run web rails rspec`
+* `docker compose run web rspec`
 
 ## 使⽤している Linter/Formatter の説明と設定⽅法
-以下のコマンドを実行してください。
+* 説明
+* 使用方法
+  * `docker compose run web rubocop`
 
-* `docker compose run web rails rubocop`
-
-## API 仕様(Swagger/OpenAPI 形式など推奨)
+## API 仕様
 以下のファイルを参照してください。
 
 * `schema/schema.yml`
