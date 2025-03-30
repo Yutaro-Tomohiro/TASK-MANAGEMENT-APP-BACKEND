@@ -1,24 +1,26 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 起動⼿順および依存関係のインストール⽅法
 
-Things you may want to cover:
+以下のコマンドを順番に実行してください。
 
-* Ruby version
+* `docker compose build`
+* `docker compose run web rails db:create`
+* `docker compose run web rails db:migrate`
 
-* System dependencies
+## テスト実⾏⽅法
+以下のコマンドを実行してください。
 
-* Configuration
+* `docker compose run web rails rspec`
 
-* Database creation
+## 使⽤している Linter/Formatter の説明と設定⽅法
+以下のコマンドを実行してください。
 
-* Database initialization
+* `docker compose run web rails rubocop`
 
-* How to run the test suite
+## API 仕様(Swagger/OpenAPI 形式など推奨)
+以下のファイルを参照してください。
 
-* Services (job queues, cache servers, search engines, etc.)
+* `schema/schema.yml`
 
-* Deployment instructions
-
-* ...
+## システム構成や設計上の選択理由など、実装内容の概要
