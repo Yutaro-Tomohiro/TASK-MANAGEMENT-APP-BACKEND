@@ -1,6 +1,6 @@
 require 'rails_helper'
-RSpec.describe "Users API", type: :request do
-  describe "POST /users" do
+RSpec.describe "V1::Users API", type: :request do
+  describe "POST /v1/users" do
     let(:valid_attributes) do
       {
         name: "test_user",
@@ -13,7 +13,7 @@ RSpec.describe "Users API", type: :request do
 
     context "リクエストが有効な時" do
       it "201 を返す" do
-        post "/users", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        post "/v1/users", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(201)
       end
@@ -21,7 +21,7 @@ RSpec.describe "Users API", type: :request do
 
     context "リクエストが無効な時" do
       it "400 を返す" do
-        post "/users", params: invalid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        post "/v1/users", params: invalid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(400)
       end
@@ -29,8 +29,8 @@ RSpec.describe "Users API", type: :request do
 
     context "登録済みの email の時" do
       it "409 を返す" do
-        post "/users", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
-        post "/users", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        post "/v1/users", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        post "/v1/users", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(409)
       end
@@ -43,13 +43,13 @@ RSpec.describe "Users API", type: :request do
 
         allow(UserService).to receive(:new).and_return(user_service)
 
-        post '/users', params: valid_attributes.to_json, headers: { 'Content-Type': 'application/json' }
+        post '/v1/users', params: valid_attributes.to_json, headers: { 'Content-Type': 'application/json' }
         expect(response).to have_http_status(500)
       end
     end
   end
 
-  describe "POST /users/login" do
+  describe "POST /v1/users/login" do
     let(:create_user_attributes) do
       {
         name: "test_user",
@@ -85,12 +85,12 @@ RSpec.describe "Users API", type: :request do
     end
 
     before do
-      post "/users", params: create_user_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+      post "/v1/users", params: create_user_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
     end
 
     context "リクエストが有効な時" do
       it "200 を返す" do
-        post "/users/login", params: valid_login_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        post "/v1/users/login", params: valid_login_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(200)
       end
@@ -98,13 +98,13 @@ RSpec.describe "Users API", type: :request do
 
     context "フォームが無効な時" do
       it "400 を返す (パラメータが不足している場合)" do
-        post "/users/login", params: missing_email_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        post "/v1/users/login", params: missing_email_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(400)
       end
 
       it "400 を返す (パスワードが不足している場合)" do
-        post "/users/login", params: missing_password_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        post "/v1/users/login", params: missing_password_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(400)
       end
@@ -112,7 +112,7 @@ RSpec.describe "Users API", type: :request do
 
     context "認証が失敗した場合" do
       it "401 を返す (無効なメールアドレスまたはパスワード)" do
-        post "/users/login", params: invalid_login_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        post "/v1/users/login", params: invalid_login_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(401)
       end
@@ -125,7 +125,7 @@ RSpec.describe "Users API", type: :request do
 
         allow(UserAuthenticationService).to receive(:new).and_return(user_authentication_service)
 
-        post "/users/login", params: valid_login_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        post "/v1/users/login", params: valid_login_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
         expect(response).to have_http_status(500)
       end
     end

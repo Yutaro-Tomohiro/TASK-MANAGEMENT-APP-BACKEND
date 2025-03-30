@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Tasks API", type: :request do
+RSpec.describe "V1::Tasks API", type: :request do
   let(:user) { User.create!(identity: SecureRandom.uuid, name: "Test User") }
   let(:task) { create(:task) }
   let(:jwt_token) { JwtService.new.generate_jwt(user.identity) }  # 実際のJWTトークンを生成
@@ -30,12 +30,12 @@ RSpec.describe "Tasks API", type: :request do
     cookies[:jwt] = jwt_token
     allow(JwtService).to receive(:decode_jwt).with(jwt_token).and_return([ { 'user_id' => user.identity } ])
     allow(User).to receive(:find_by).with(identity: user.identity).and_return(user)
-    allow_any_instance_of(TasksController).to receive(:authenticate_user!).and_return(true) # rubocop:disable RSpec/AnyInstance
+    allow_any_instance_of(V1::TasksController).to receive(:authenticate_user!).and_return(true) # rubocop:disable RSpec/AnyInstance
   end
 
   shared_examples "認証エラー" do
     it "401 を返す" do
-      allow_any_instance_of(TasksController).to receive(:authenticate_user!).and_raise(UnauthorizedError) # rubocop:disable RSpec/AnyInstance
+      allow_any_instance_of(V1::TasksController).to receive(:authenticate_user!).and_raise(UnauthorizedError) # rubocop:disable RSpec/AnyInstance
       request_call
       expect(response).to have_http_status(401)
     end
@@ -49,12 +49,12 @@ RSpec.describe "Tasks API", type: :request do
     end
   end
 
-  describe "POST /tasks" do
-    let(:request_call) { post "/tasks", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" } }
+  describe "POST /v1/tasks" do
+    let(:request_call) { post "/v1/tasks", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" } }
 
     context "リクエストが有効な時" do
       it "201 を返す" do
-        post "/tasks", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        post "/v1/tasks", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(201)
       end
@@ -62,7 +62,7 @@ RSpec.describe "Tasks API", type: :request do
 
     context "リクエストが無効な時" do
       it "400 を返す (必須フィールドが不足している場合)" do
-        post "/tasks", params: invalid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        post "/v1/tasks", params: invalid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(400)
       end
@@ -76,7 +76,7 @@ RSpec.describe "Tasks API", type: :request do
       it "404 を返す" do
         invalid_user_id = SecureRandom.uuid
 
-        post "/tasks", params: valid_attributes.merge(assignee_ids: [ invalid_user_id ]).to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        post "/v1/tasks", params: valid_attributes.merge(assignee_ids: [ invalid_user_id ]).to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(404)
       end
@@ -87,12 +87,12 @@ RSpec.describe "Tasks API", type: :request do
     end
   end
 
-  describe "GET /tasks/:id" do
-    let(:request_call) { get "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" } }
+  describe "GET /v1/tasks/:id" do
+    let(:request_call) { get "/v1/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" } }
 
     context "リクエストが有効な時" do
       it "200 を返す" do
-        get "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" }
+        get "/v1/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(200)
       end
@@ -100,7 +100,7 @@ RSpec.describe "Tasks API", type: :request do
 
     context "リクエストのidentityがUUIDでない時" do
       it "400 を返す" do
-        get "/tasks/invalid_task_id", headers: { "CONTENT_TYPE" => "application/json" }
+        get "/v1/tasks/invalid_task_id", headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(400)
       end
@@ -112,7 +112,7 @@ RSpec.describe "Tasks API", type: :request do
 
     context "タスクが存在しない時" do
       it "404 を返す" do
-        get "/tasks/#{SecureRandom.uuid}", headers: { "CONTENT_TYPE" => "application/json" }
+        get "/v1/tasks/#{SecureRandom.uuid}", headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(404)
       end
@@ -123,12 +123,12 @@ RSpec.describe "Tasks API", type: :request do
     end
   end
 
-  describe "PUT /tasks/:id" do
-    let(:request_call) { put "/tasks/#{task.identity}", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" } }
+  describe "PUT /v1/tasks/:id" do
+    let(:request_call) { put "/v1/tasks/#{task.identity}", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" } }
 
     context "リクエストが有効な時" do
       it "204 を返す" do
-        put "/tasks/#{task.identity}", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        put "/v1/tasks/#{task.identity}", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(204)
       end
@@ -136,7 +136,7 @@ RSpec.describe "Tasks API", type: :request do
 
     context "リクエストのidentityがUUIDでない時" do
       it "400 を返す" do
-        put "/tasks/invalid_task_id", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        put "/v1/tasks/invalid_task_id", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(400)
       end
@@ -148,7 +148,7 @@ RSpec.describe "Tasks API", type: :request do
 
     context "タスクが存在しない時" do
       it "404 を返す" do
-        put "/tasks/#{SecureRandom.uuid}", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        put "/v1/tasks/#{SecureRandom.uuid}", params: valid_attributes.to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(404)
       end
@@ -156,7 +156,7 @@ RSpec.describe "Tasks API", type: :request do
 
     context "すべての assignee_ids が存在しないユーザー ID の時" do
       it "404 を返す" do
-        put "/tasks/#{task.identity}", params: valid_attributes.merge(assignee_ids: [ SecureRandom.uuid ]).to_json, headers: { "CONTENT_TYPE" => "application/json" }
+        put "/v1/tasks/#{task.identity}", params: valid_attributes.merge(assignee_ids: [ SecureRandom.uuid ]).to_json, headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(404)
       end
@@ -167,12 +167,12 @@ RSpec.describe "Tasks API", type: :request do
     end
   end
 
-  describe "DELETE /tasks/:id" do
-    let(:request_call) { delete "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" } }
+  describe "DELETE /v1/tasks/:id" do
+    let(:request_call) { delete "/v1/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" } }
 
     context "リクエストが有効な時" do
       it "204 を返す" do
-        delete "/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" }
+        delete "/v1/tasks/#{task.identity}", headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(204)
       end
@@ -180,7 +180,7 @@ RSpec.describe "Tasks API", type: :request do
 
     context "リクエストのidentityがUUIDでない時" do
       it "400 を返す" do
-        delete "/tasks/invalid_task_id", headers: { "CONTENT_TYPE" => "application/json" }
+        delete "/v1/tasks/invalid_task_id", headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(400)
       end
@@ -192,7 +192,7 @@ RSpec.describe "Tasks API", type: :request do
 
     context "タスクが存在しない時" do
       it "404 を返す" do
-        delete "/tasks/#{SecureRandom.uuid}", headers: { "CONTENT_TYPE" => "application/json" }
+        delete "/v1/tasks/#{SecureRandom.uuid}", headers: { "CONTENT_TYPE" => "application/json" }
 
         expect(response).to have_http_status(404)
       end
@@ -203,7 +203,7 @@ RSpec.describe "Tasks API", type: :request do
     end
   end
 
-  describe "GET /tasks" do
+  describe "GET /v1/tasks" do
     let(:valid_attributes) do
       {
         assignee_id: nil,
@@ -224,7 +224,7 @@ RSpec.describe "Tasks API", type: :request do
       }
     end
 
-    let(:request_call) { get "/tasks", params: valid_attributes, headers: { "CONTENT_TYPE" => "application/json" } }
+    let(:request_call) { get "/v1/tasks", params: valid_attributes, headers: { "CONTENT_TYPE" => "application/json" } }
 
     context "リクエストが有効な時" do
       it "200 を返す" do
@@ -235,7 +235,7 @@ RSpec.describe "Tasks API", type: :request do
 
     context "リクエストが無効な時" do
       it "400 を返す" do
-        get "/tasks", params: invalid_attributes, headers: { "CONTENT_TYPE" => "application/json" }
+        get "/v1/tasks", params: invalid_attributes, headers: { "CONTENT_TYPE" => "application/json" }
         expect(response).to have_http_status(400)
       end
     end
