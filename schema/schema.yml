@@ -1,0 +1,481 @@
+openapi: 3.0.0
+x-stoplight:
+  id: ol8z5ia9supyu
+info:
+  title: Task Management API
+  version: 1.0.0
+  description: タスクマネジメント API
+paths:
+  /v1/users:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/User'
+                - $ref: '#/components/schemas/Credential'
+      responses:
+        '201':
+          description: |
+            Created
+          headers: {}
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Conflict
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal Server Error
+      summary: ユーザー登録
+      operationId: postV1Users
+      description: ユーザーの登録
+      parameters: []
+      security: []
+      tags:
+        - users
+  /v1/users/login:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credential'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/UserId'
+                  - $ref: '#/components/schemas/User'
+          headers:
+            Set-Cookie:
+              description: JWTトークンを保存するためのクッキー
+              schema:
+                type: string
+                example: "jwt=jwt_token; HttpOnly; Secure; SameSite=Strict;"
+          description: OK
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal Server Error
+      summary: ユーザーログイン
+      operationId: postV1UsersLogin
+      description: |-
+        登録済みユーザーのログイン。
+        成功時に JWT を返却。
+      parameters: []
+      security: []
+      tags:
+        - users
+  /v1/tasks:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskWithDescription'
+        required: true
+      responses:
+        '201':
+          description: Created
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Unauthorized, invalid JWT token'
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not Found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal Server Error
+      summary: タスク作成
+      operationId: postV1tTasks
+      description: タスクの作成
+      security:
+        - bearerAuth: []
+      tags:
+        - tasks
+    get:
+      parameters:
+        - name: assignee_ids
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          description: 担当者 ID
+        - name: status
+          schema:
+            type: string
+            enum:
+              - not_started
+              - in_progress
+              - completed
+          in: query
+          description: ステータス
+        - name: priority
+          schema:
+            type: string
+            enum:
+              - low
+              - medium
+              - high
+          in: query
+          description: 優先度
+        - name: expires
+          schema:
+            type: string
+            enum:
+              - lt
+              - gt
+          in: query
+          description: 期限
+        - name: sort_by
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+          in: query
+          description: ソート順
+        - name: cursor
+          schema:
+            type: string
+          in: query
+          description: カーソル
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tasks:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/TaskId'
+                        - $ref: '#/components/schemas/Task'
+                  pagination:
+                    type: object
+                    properties:
+                      next_cursor:
+                        type: string
+                        nullable: true
+                      previous_cursor:
+                        type: string
+                        nullable: true
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Unauthorized, invalid JWT token'
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal Server Error
+      summary: タスク一覧取得
+      operationId: getV1Tasks
+      description: タスク一覧の取得
+      security:
+        - bearerAuth: []
+      tags:
+        - tasks
+  '/v1/tasks/{taskId}':
+    get:
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskWithDescription'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not Found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal Server Error
+      summary: タスク取得
+      operationId: getV1TasksId
+      description: タスク詳細の取得
+      tags:
+        - tasks
+      security:
+        - bearerAuth: []
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Task'
+                - $ref: '#/components/schemas/TaskDescription'
+        required: true
+      responses:
+        '204':
+          description: No Content
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Unauthorized, invalid JWT token'
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not Found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: タスク更新
+      operationId: putV1TasksId
+      description: タスクの更新
+      security:
+        - bearerAuth: []
+      tags:
+        - tasks
+    delete:
+      responses:
+        '204':
+          description: No Content
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Unauthorized, invalid JWT token'
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not Found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal Server Error
+      summary: タスク削除
+      operationId: deleteTasksId
+      description: タスクの削除
+      security:
+        - bearerAuth: []
+      tags:
+        - tasks
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: taskId
+        in: path
+        required: true
+        description: タスク ID
+components:
+  schemas:
+    Credential:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          description: Eメール
+          format: email
+        password:
+          type: string
+          description: パスワード
+          minLength: 8
+          maxLength: 24
+      x-internal: false
+    UserId:
+      type: object
+      required:
+        - user_id
+      properties:
+        user_id:
+          description: ユーザー ID
+          type: string
+          format: uuid
+      x-internal: false
+    User:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          description: ユーザー名
+          type: string
+          maxLength: 50
+      x-internal: false
+    TaskId:
+      type: object
+      required:
+        - task_id
+      properties:
+        task_id:
+          description: タスク ID
+          type: string
+          format: uuid
+      x-internal: false
+    Task:
+      type: object
+      title: Task
+      x-internal: false
+      required:
+        - assignee_ids
+        - title
+        - priority
+        - status
+        - begins_at
+        - ends_at
+      properties:
+        assignee_ids:
+          description: 担当者 ID
+          type: array
+          items:
+            $ref: '#/components/schemas/UserId'
+        title:
+          description: タスク名
+          type: string
+        priority:
+          enum:
+            - low
+            - medium
+            - high
+          description: 優先度
+        status:
+          enum:
+            - not_started
+            - in_progress
+            - completed
+          description: 進行状況
+        begins_at:
+          format: date-time
+          description: 開始日時
+          type: string
+        ends_at:
+          format: date-time
+          description: 終了日時
+          type: string
+    TaskDescription:
+      type: object
+      x-internal: false
+      properties:
+        text:
+          type: string
+          nullable: true
+    TaskWithDescription:
+      title: ''
+      allOf:
+        - $ref: '#/components/schemas/Task'
+        - $ref: '#/components/schemas/TaskDescription'
+    Error:
+      type: object
+      properties:
+        code:
+          description: エラーコード
+          type: integer
+        message:
+          description: エラーメッセージ
+          type: string
+      x-internal: false
+  responses: {}
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: ユーザーログイン成功時に返却される JWT
+tags:
+  - name: users
+  - name: tasks

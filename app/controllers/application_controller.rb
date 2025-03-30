@@ -1,4 +1,16 @@
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
-  allow_browser versions: :modern
+  include ActionController::Cookies
+
+  rescue_from BadRequestError, with: :handle_error
+  rescue_from ConflictError, with: :handle_error
+  rescue_from NotFoundError, with: :handle_error
+  rescue_from StandardError, with: :handle_error
+
+  private
+
+  def handle_error(error)
+    error = ApplicationError.wrap(error)
+
+    render json: { error: error.message }, status: error.default_code
+  end
 end
