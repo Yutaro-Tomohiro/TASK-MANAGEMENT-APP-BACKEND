@@ -6,7 +6,7 @@ info:
   version: 1.0.0
   description: タスクマネジメント API
 paths:
-  /users:
+  /v1/users:
     post:
       requestBody:
         content:
@@ -39,13 +39,13 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Internal Server Error
       summary: ユーザー登録
-      operationId: postUsers
+      operationId: postV1Users
       description: ユーザーの登録
       parameters: []
       security: []
       tags:
         - users
-  /users/login:
+  /v1/users/login:
     post:
       requestBody:
         content:
@@ -87,7 +87,7 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Internal Server Error
       summary: ユーザーログイン
-      operationId: postUsersLogin
+      operationId: postV1UsersLogin
       description: |-
         登録済みユーザーのログイン。
         成功時に JWT を返却。
@@ -95,7 +95,7 @@ paths:
       security: []
       tags:
         - users
-  /tasks:
+  /v1/tasks:
     post:
       requestBody:
         content:
@@ -131,7 +131,7 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Internal Server Error
       summary: タスク作成
-      operationId: postTasks
+      operationId: postV1tTasks
       description: タスクの作成
       security:
         - bearerAuth: []
@@ -227,13 +227,13 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Internal Server Error
       summary: タスク一覧取得
-      operationId: getTasks
+      operationId: getV1Tasks
       description: タスク一覧の取得
       security:
         - bearerAuth: []
       tags:
         - tasks
-  '/tasks/{taskId}':
+  '/v1/tasks/{taskId}':
     get:
       responses:
         '200':
@@ -267,7 +267,7 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Internal Server Error
       summary: タスク取得
-      operationId: getTasksId
+      operationId: getV1TasksId
       description: タスク詳細の取得
       tags:
         - tasks
@@ -310,7 +310,7 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Internal server error
       summary: タスク更新
-      operationId: putTasksId
+      operationId: putV1TasksId
       description: タスクの更新
       security:
         - bearerAuth: []
