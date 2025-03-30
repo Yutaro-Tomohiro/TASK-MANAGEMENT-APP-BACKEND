@@ -49,6 +49,16 @@ docker compose run web  bundle exec rubocop path/to/file.rb
 * `.rubocop.yml` という設定ファイルからプロジェクトごとにコードスタイルをカスタマイズができます
 * 今回は `rubocop-rails-omakase` という Rails 7.2 から標準に組み込まれているものをベースにカスタマイズしています
 
+### Guard について
+* このレポジトリには `guard` を導入しています。  
+* `guard` は、ファイルの変更を監視し、指定されたタスク（テストの実行、Lint の適用、アプリの再起動など）を自動的に実行する Ruby 用のツールです。  
+* `rspec` と `rubocop` を監視対象に加えているため、`guard` を実行している間はファイルの変更があると **自動でテストと Lint チェック** を実行します。  
+* 以下のコマンドで `guard` を起動できます。  
+
+```sh
+docker compose exec bundle exec guard
+```
+
 ## API 仕様
 以下のファイルを参照してください。
 
