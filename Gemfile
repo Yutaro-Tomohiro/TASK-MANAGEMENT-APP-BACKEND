@@ -56,7 +56,7 @@ group :development, :test do
   gem 'guard-rspec', require: false
   gem 'guard-rubocop', require: false
 
-  gem 'rspec-rails', '~> 7.1.1'
+  gem 'rspec-rails', '~> 8.0.0'
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem 'rubocop-rails-omakase', require: false
