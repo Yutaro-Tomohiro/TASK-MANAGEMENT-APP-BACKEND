@@ -20,11 +20,6 @@ For full API details, please refer to the API Specification(schema/schema.yml) i
 docker compose build
 docker compose run web rails db:create
 docker compose run web rails db:migrate
-
-```bash
-docker compose build
-docker compose run web rails db:create
-docker compose run web rails db:migrate
 ```
 
 
