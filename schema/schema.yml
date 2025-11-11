@@ -4,7 +4,7 @@ x-stoplight:
 info:
   title: Task Management API
   version: 1.0.0
-  description: タスクマネジメント API
+  description: Task Management API
 paths:
   /v1/users:
     post:
@@ -38,9 +38,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Internal Server Error
-      summary: ユーザー登録
+      summary: User registration
       operationId: postV1Users
-      description: ユーザーの登録
+      description: User registration
       parameters: []
       security: []
       tags:
@@ -63,7 +63,7 @@ paths:
                   - $ref: '#/components/schemas/User'
           headers:
             Set-Cookie:
-              description: JWTトークンを保存するためのクッキー
+              description: Cookie to store the JWT token
               schema:
                 type: string
                 example: "jwt=jwt_token; HttpOnly; Secure; SameSite=Strict;"
@@ -86,11 +86,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Internal Server Error
-      summary: ユーザーログイン
+      summary: User login
       operationId: postV1UsersLogin
       description: |-
-        登録済みユーザーのログイン。
-        成功時に JWT を返却。
+        Logs in a registered user. 
+        Returns a JWT on success.
       parameters: []
       security: []
       tags:
@@ -130,9 +130,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Internal Server Error
-      summary: タスク作成
+      summary: Create task
       operationId: postV1tTasks
-      description: タスクの作成
+      description: Create task
       security:
         - bearerAuth: []
       tags:
@@ -145,7 +145,7 @@ paths:
             items:
               type: string
           in: query
-          description: 担当者 ID
+          description: Assignee ids
         - name: status
           schema:
             type: string
@@ -154,7 +154,7 @@ paths:
               - in_progress
               - completed
           in: query
-          description: ステータス
+          description: Status
         - name: priority
           schema:
             type: string
@@ -163,7 +163,7 @@ paths:
               - medium
               - high
           in: query
-          description: 優先度
+          description: Priority
         - name: expires
           schema:
             type: string
@@ -171,7 +171,7 @@ paths:
               - lt
               - gt
           in: query
-          description: 期限
+          description: Deadline
         - name: sort_by
           schema:
             type: string
@@ -179,12 +179,12 @@ paths:
               - asc
               - desc
           in: query
-          description: ソート順
+          description: Sort order
         - name: cursor
           schema:
             type: string
           in: query
-          description: カーソル
+          description: Cursor
       responses:
         '200':
           description: OK
@@ -226,9 +226,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Internal Server Error
-      summary: タスク一覧取得
+      summary: Get task list
       operationId: getV1Tasks
-      description: タスク一覧の取得
+      description: Get task list
       security:
         - bearerAuth: []
       tags:
@@ -266,9 +266,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Internal Server Error
-      summary: タスク取得
+      summary: Get task
       operationId: getV1TasksId
-      description: タスク詳細の取得
+      description: Get task details
       tags:
         - tasks
       security:
@@ -309,9 +309,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Internal server error
-      summary: タスク更新
+      summary: Update task
       operationId: putV1TasksId
-      description: タスクの更新
+      description: Update task
       security:
         - bearerAuth: []
       tags:
@@ -344,9 +344,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Internal Server Error
-      summary: タスク削除
+      summary: Delete task
       operationId: deleteTasksId
-      description: タスクの削除
+      description: Delete task
       security:
         - bearerAuth: []
       tags:
@@ -358,7 +358,7 @@ paths:
         name: taskId
         in: path
         required: true
-        description: タスク ID
+        description: Task ID
 components:
   schemas:
     Credential:
@@ -369,11 +369,11 @@ components:
       properties:
         email:
           type: string
-          description: Eメール
+          description: Email
           format: email
         password:
           type: string
-          description: パスワード
+          description: Password
           minLength: 8
           maxLength: 24
       x-internal: false
@@ -383,7 +383,7 @@ components:
         - user_id
       properties:
         user_id:
-          description: ユーザー ID
+          description: User ID
           type: string
           format: uuid
       x-internal: false
@@ -393,7 +393,7 @@ components:
         - name
       properties:
         name:
-          description: ユーザー名
+          description: User name
           type: string
           maxLength: 50
       x-internal: false
@@ -403,7 +403,7 @@ components:
         - task_id
       properties:
         task_id:
-          description: タスク ID
+          description: Task ID
           type: string
           format: uuid
       x-internal: false
@@ -420,32 +420,32 @@ components:
         - ends_at
       properties:
         assignee_ids:
-          description: 担当者 ID
+          description: Assignee IDs
           type: array
           items:
             $ref: '#/components/schemas/UserId'
         title:
-          description: タスク名
+          description: Task name
           type: string
         priority:
           enum:
             - low
             - medium
             - high
-          description: 優先度
+          description: Priority
         status:
           enum:
             - not_started
             - in_progress
             - completed
-          description: 進行状況
+          description: Task Progress
         begins_at:
           format: date-time
-          description: 開始日時
+          description: Start date and time
           type: string
         ends_at:
           format: date-time
-          description: 終了日時
+          description: End date and time
           type: string
     TaskDescription:
       type: object
@@ -463,10 +463,10 @@ components:
       type: object
       properties:
         code:
-          description: エラーコード
+          description: error code
           type: integer
         message:
-          description: エラーメッセージ
+          description: error message
           type: string
       x-internal: false
   responses: {}
@@ -475,7 +475,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: ユーザーログイン成功時に返却される JWT
+      description: JWT returned when user login is successful
 tags:
   - name: users
   - name: tasks
