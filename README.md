@@ -1,17 +1,20 @@
 # README
-## 概要
 
-* このアプリはチームがユーザーとタスクを効率的に管理できるように設計されたシンプルなタスク管理　API　です
-* ユーザーの登録・ログインに加え、タスクの作成・更新・取得・削除が可能です
-* タスクには担当者、優先度、ステータス、開始/終了日時、および任意の説明を設定できます
-* タスク操作は　JWT　認証によって保護されています。
-* 詳細な　API　仕様については、このリポジトリに含まれている API Specification（schema/schema.yml）を参照してください
+## Overview
 
-## 起動⼿順および依存関係のインストール⽅法
+This is a simple Task Management API designed to help teams manage users and tasks efficiently.  
+It supports user registration and login, as well as creating, updating, retrieving, and deleting tasks.  
 
-* 以下のコマンドを順番に実行してください
-  * macOS 環境を想定しています
-  * Windows 環境の場合、Dockerfile 9 行目の処理の `COPY entrypoint.sh /usr/bin/` で `/usr/bin/` がないため、エラーになると思います
+Tasks can have assignees, priorities, statuses, start/end dates, and optional descriptions.  
+Task operations are secured with JWT authentication.  
+
+For full API details, please refer to the API Specification(schema/schema.yml) included in this repository.
+
+## Setup Instructions and Dependency Installation
+
+* Please run the following commands in order:
+  * Assumes a macOS environment.
+  * For Windows environments, you may encounter an error at line 9 of the Dockerfile (`COPY entrypoint.sh /usr/bin/`) because `/usr/bin/` may not exist.
 
 ```bash
 docker compose build
@@ -20,97 +23,108 @@ docker compose run web rails db:migrate
 ```
 
 
-## テスト実⾏⽅法
-### 実行方法
-以下のコマンドを実行すると spec ディレクトリ内のすべてのテストを実行します
+## Running Tests
+
+### How to Run
+Execute the following command to run all tests in the `spec` directory:
+
 ```bush
 docker compose run web bundle exec rspec
 ```
 
-特定のファイルだけをテストしたい場合は以下を実行してください
+If you want to run tests for a specific file only, use the following command:
+
 ```bush
 docker compose run web bundle exec rspec spec/models/user_spec.rb
 ```
 
-Specのテスト実行後、テストの結果がターミナルに表示され、テストが成功した場合は緑色、失敗した場合は赤色で表示されます
+After running the specs, the test results will appear in the terminal:
+	•	Green indicates the test passed.
+	•	Red indicates the test failed.
 
-## 使⽤している Linter/Formatter の説明と設定⽅法
+## Linter/Formatter Usage and Configuration
 
-### 使用方法
-コードをチェックするには、以下のコマンドを実行します
+### Usage
+
+Check code:
+
 ```bush
 docker compose run web  bundle exec rubocop
 ```
 
-コードを自動修正するには、以下のコマンドを実行します
+Auto-correct code:
+
 ```bush
 docker compose run web  bundle exec rubocop -a
 ```
 
-特定のファイルやディレクトリを指定してチェックする場合
+Check specific file or directory:
+
 ```bush
 docker compose run web  bundle exec rubocop path/to/file.rb
 ```
 
-### 設定
-* `.rubocop.yml` という設定ファイルからプロジェクトごとにコードスタイルをカスタマイズができます
-* 今回は `rubocop-rails-omakase` という Rails 7.2 から標準に組み込まれているものをベースにカスタマイズしています
+### Configuration
 
-### Guard について
-* このレポジトリには `guard` を導入しています。  
-* `guard` は、ファイルの変更を監視し、指定されたタスク（テストの実行、Lint の適用、アプリの再起動など）を自動的に実行する Ruby 用のツールです。  
-* `rspec` と `rubocop` を監視対象に加えているため、`guard` を実行している間はファイルの変更があると **自動でテストと Lint チェック** を実行します。  
-* 以下のコマンドで `guard` を起動できます。  
+* Customize project-specific styles in .rubocop.yml
+* Based on rubocop-rails-omakase (default for Rails 7.2)
+
+### Guard
+
+* Guard watches files and runs tasks (tests, lint, app restart)
+* `guard` is a Ruby tool that monitors file changes and automatically executes specified tasks, such as running tests, applying lint, or restarting the application.
+* Since `rspec` and `rubocop` are included in the watch list, when `guard` is running, any file changes will **automatically trigger tests and lint checks**.
+* You can start `guard` with the following command:
 
 ```sh
 docker compose exec bundle exec guard
 ```
 
-## API 仕様
-以下のファイルを参照してください。
+## API Specification
+Refer to:
 
 * `schema/schema.yml`
 
-## システム構成や設計上の選択理由など、実装内容の概要
+## System Overview and Design Choices
 
-### システム構成
+### System Architecture
 * **Ruby, Ruby on Rails**
-  * 最も慣れているサーバーサイドの言語であり、短期間での開発には特に力を発揮しやすいため選択しました。
+  * It is the server-side language I am most comfortable with, and I chose it because it is especially effective for short-term development.
   
 * **PostgreSQL**
-  * MySQL とどちらを選ぶべきか悩みましたが、[Stack Overflowの2024年版開発者調査](https://survey.stackoverflow.co/2024/technology#1-databases)で PostgreSQL の普及率が高いことを知り、興味を持って採用しました。
+  * I was unsure whether to choose MySQL, but after seeing that PostgreSQL has a high adoption rate in [the Stack Overflow 2024 Developer Survey](https://survey.stackoverflow.co/2024/technology#1-databases), I became interested and decided to use it.
 
 * **Docker**
-  * コードを見ていただく際の実行環境を考慮した際、コンテナベースの方が環境構築が簡単であると考えました。
-  * Podman も選択肢に挙がりましたが、 Docker を使い慣れており、短期間の開発にはこちらが適していると考えました。
+  * When considering the runtime environment for others to review the code, I thought a container-based setup would make environment configuration easier.
+  * Podman was also an option, but since I am more familiar with Docker, I decided it was better suited for short-term development.
 
-### 実装でこだわった点
+### Implementation Highlights
 
-#### エラーハンドリング
-* エラー処理は `ApplicationController` に集約し、各コントローラーでのエラーハンドリングの共通化を図りました。
-* エラー発生時は、エラークラスのインスタンスを生成するだけで済む設計にすることで、エラーハンドリングをシンプルにしました。
-* ただし、エラーステータスごとにメッセージを固定化したため、エラー調査時に柔軟な情報提供が難しくなるケースがありました。この点については、エラーメッセージを動的に渡せるように改善の余地があると感じています。
+#### Error Handling
+* Centralized error handling in `ApplicationController` to standardize error processing across controllers.
+* Simplified error handling by designing it so that generating an instance of the error class is sufficient when an error occurs.
+* However, since error messages were fixed per status, it sometimes limited the flexibility of information provided during error investigation. There is room for improvement to pass dynamic error messages.
 
-#### Formオブジェクト、Serviceオブジェクト、Repositoryオブジェクトの使用
-* **Formオブジェクト**: バリデーションを担当し、リクエストを安全に行えるように設計しました。
-* **Serviceオブジェクト**: 主にビジネスロジックの「what」をまとめ、処理内容が直感的に理解できるようにしました。
-* **Repositoryオブジェクト**: 「how」に関する処理を隠蔽し、責務を明確に分離しました。
-* また、Service と Repository の各クラスにはインターフェースを定義し、YARDコメントでインプットとアウトプットを記載することで、他の開発者がコードを理解しやすいように工夫しました。
+#### Use of Form, Service, and Repository Objects
+* **Form Object**: Handles validation and ensures requests are processed safely.
+* **Service Object**: Consolidates the "what" of business logic, making processing more intuitive to understand.
+* **Repository Object**: Encapsulates the "how" of operations and clearly separates responsibilities.
+* Interfaces were defined for each Service and Repository class, with YARD comments documenting inputs and outputs to help other developers understand the code more easily.
 
-#### DB構造
-* ユーザー情報と認証情報は、それぞれ異なるユースケースで利用されると考えたため、テーブルを分割しました。
-* この設計により、ユースケースごとに最小限の情報を取り扱うことができ、パフォーマンス面で有利な影響を与えることができたと考えています。
+#### Database Structure
+* User information and authentication information were split into separate tables because they are used in different use cases.
+* This design allows handling only the minimal required data per use case, which is expected to have a positive impact on performance.
 
-#### 認証ロジック
-* 本アプリケーションは、フロントエンドとバックエンドが同一ドメインで動作する前提で設計しました。
-* 理由は、Cookie の SameSite: Strict を利用することで、CSRF攻撃の対策が簡単に行えるためです。
-* さらに、httpOnly:true にすることで、XSS攻撃にも対応できるため、セキュリティ面で優れた対応が可能です。
-  * [参考サイト](https://qiita.com/Hiro-mi/items/18e00060a0f8654f49d6#session%E3%82%92%E7%94%A8%E3%81%84session%E3%82%92%E8%A8%80%E3%81%86%E3%81%8B%E5%89%8D)
-* JWTの暗号鍵は、`credentials.yml` で暗号化して保存し、セキュリティを確保しました。
-* `credentials.yml` は、Railsアプリケーション内で機密情報（APIキー、パスワードなど）を安全に管理するためのファイルです。
-* `master.key` がないと複合できないため、安全に秘密情報をサーバーにアップロードできます。このキーは `.gitignore` に追加して、漏洩しないように管理しています。
+#### Authentication Logic
+* The application was designed under the assumption that the frontend and backend operate on the same domain.
+* Using `SameSite: Strict` for cookies makes CSRF protection straightforward.
+* Setting `httpOnly: true` also protects against XSS attacks, providing a robust security measure.
+  * [Reference](https://qiita.com/Hiro-mi/items/18e00060a0f8654f49d6#session%E3%82%92%E7%94%A8%E3%81%84session%E3%82%92%E8%A8%80%E3%81%86%E3%81%8B%E5%89%8D)
+* JWT encryption keys are stored encrypted in `credentials.yml` to ensure security.
+* `credentials.yml` manages sensitive information (API keys, passwords, etc.) safely within a Rails application.
+* Without `master.key`, decryption is impossible, allowing safe uploading of secrets to the server. The key is added to `.gitignore` to prevent leaks.
 
-#### GitHub Actions の CI を導入  
-* GitHub へのプッシュ時に自動で Lint チェックとテストを実行するように設定しました。  
-* これにより、コードの品質を継続的に保ち、問題を早期に発見できるようになったと思います。  
-* Secrets を活用し、認証が関わるテストも CI 環境で実行可能にする工夫を施しました。
+#### GitHub Actions CI Integration
+* Configured to automatically run lint checks and tests upon pushing to GitHub.
+* This helps maintain code quality continuously and catch issues early.
+* Used Secrets to allow authentication-related tests to run safely in the CI environment.
